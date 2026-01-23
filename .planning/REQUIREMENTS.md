@@ -37,8 +37,8 @@
 
 ### Persistence
 
-- [ ] **DATA-01**: Test cases persist between sessions
-- [ ] **DATA-02**: Images stored locally and referenced by test cases
+- [x] **DATA-01**: Test cases persist between sessions
+- [x] **DATA-02**: Images stored locally and referenced by test cases
 
 ## v2 Requirements
 
@@ -74,8 +74,8 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DATA-01 | Phase 1 | Pending |
-| DATA-02 | Phase 1 | Pending |
+| DATA-01 | Phase 1 | Complete |
+| DATA-02 | Phase 1 | Complete |
 | TEST-01 | Phase 2 | Pending |
 | TEST-02 | Phase 2 | Pending |
 | TEST-03 | Phase 2 | Pending |
@@ -99,4 +99,4 @@
 
 ---
 *Requirements defined: 2026-01-22*
-*Last updated: 2026-01-22 after roadmap creation*
+*Last updated: 2026-01-22 - Phase 1 requirements complete*
