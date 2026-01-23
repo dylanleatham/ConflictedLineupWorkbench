@@ -27,10 +27,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. Test cases persist between application restarts
   2. Images uploaded by user are stored locally and retrievable
   3. Application can reference images from test cases without re-upload
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 01-01: [TBD - to be defined during phase planning]
+- [ ] 01-01-PLAN.md - Project foundation and test case persistence layer
+- [ ] 01-02-PLAN.md - Image storage with deduplication and REST API endpoints
 
 ### Phase 2: Test Management & Configuration
 **Goal**: User can manage test cases and configure prompt strategies
@@ -83,11 +84,11 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Data | 0/0 | Not started | - |
+| 1. Foundation & Data | 0/2 | Planned | - |
 | 2. Test Management & Configuration | 0/0 | Not started | - |
 | 3. Execution & Evaluation | 0/0 | Not started | - |
 | 4. Results & Export | 0/0 | Not started | - |
 
 ---
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-22*
+*Last updated: 2026-01-22 - Phase 1 planned with 2 plans in 2 waves*
