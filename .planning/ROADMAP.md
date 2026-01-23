@@ -43,10 +43,15 @@ Plans:
   3. User can see image previews in the test case list without opening each case
   4. User can paste custom system prompts into the application
   5. User can select which Claude model to use for testing
-**Plans**: TBD
+**Plans**: 6 plans
 
 Plans:
-- [ ] 02-01: [TBD - to be defined during phase planning]
+- [ ] 02-01-PLAN.md - Frontend foundation with React, routing, and API client
+- [ ] 02-02-PLAN.md - Test case list with responsive card grid and thumbnails
+- [ ] 02-03-PLAN.md - Test case creation with image upload and ground truth input
+- [ ] 02-04-PLAN.md - Test case detail, edit, and delete functionality
+- [ ] 02-05-PLAN.md - Prompt configuration panel with localStorage persistence
+- [ ] 02-06-PLAN.md - End-to-end verification checkpoint
 
 ### Phase 3: Execution & Evaluation
 **Goal**: User can run tests and get accuracy measurements
@@ -85,10 +90,10 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Data | 2/2 | Complete | 2026-01-22 |
-| 2. Test Management & Configuration | 0/0 | Not started | - |
+| 2. Test Management & Configuration | 0/6 | Planned | - |
 | 3. Execution & Evaluation | 0/0 | Not started | - |
 | 4. Results & Export | 0/0 | Not started | - |
 
 ---
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-22 - Phase 1 complete*
+*Last updated: 2026-01-23 - Phase 2 planned (6 plans in 4 waves)*
