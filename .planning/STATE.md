@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-01-22)
 ## Current Position
 
 Phase: 1 of 4 (Foundation & Data)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-01-22 — Completed 01-01-PLAN.md (test case persistence)
+Plan: 2 of 2 in current phase
+Status: Phase complete
+Last activity: 2026-01-23 — Completed 01-02-PLAN.md (image storage & REST API)
 
-Progress: [█░░░░░░░░░] 10% (1/10 estimated plans)
+Progress: [██░░░░░░░░] 20% (2/10 estimated plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 3min
-- Total execution time: 0.05 hours
+- Total plans completed: 2
+- Average duration: 3.5min
+- Total execution time: 0.12 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1. Foundation & Data | 1/2 | 3min | 3min |
+| 1. Foundation & Data | 2/2 | 7min | 3.5min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (3min)
-- Trend: Just started
+- Last 5 plans: 01-01 (3min), 01-02 (4min)
+- Trend: Consistent velocity
 
 *Updated after each plan completion*
 
@@ -48,6 +48,12 @@ Recent decisions affecting current work:
 - Skip corrupted files with logging instead of crashing
 - Delete JSON but preserve images (may be shared via content-addressing)
 
+**From 01-02 (Image storage & REST API):**
+- Hash optimized bytes, not original (deduplication based on stored content)
+- Slugify + timestamp for test case IDs (simple uniqueness without database)
+- CORS allow all origins for local development (needs restriction for production)
+- Async FastAPI handlers for scalability
+
 ### Pending Todos
 
 None yet.
@@ -57,15 +63,15 @@ None yet.
 **From Research:**
 - Evaluation methodology critical: Avoid exact string matching pitfall (research recommends normalized entity comparison, but user requires strict string matching per PROJECT.md scope)
 - Rate limiting needed for batch testing to avoid Claude API 429 errors
-- Image storage strategy must support content-addressed deduplication
+- ~~Image storage strategy must support content-addressed deduplication~~ RESOLVED: Implemented in 01-02
 
 ## Session Continuity
 
-Last session: 2026-01-22
-Stopped at: Completed 01-01-PLAN.md
+Last session: 2026-01-23
+Stopped at: Completed 01-02-PLAN.md (Phase 1 complete)
 Resume file: None
-Next action: Execute 01-02-PLAN.md (image storage and API endpoints)
+Next action: Begin Phase 2 (Extraction) - Extract lineups from images using Claude vision
 
 ---
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-22 after 01-01 completion*
+*Last updated: 2026-01-23 after 01-02 completion*
