@@ -10,29 +10,29 @@ See: .planning/PROJECT.md (updated 2026-01-22)
 ## Current Position
 
 Phase: 2 of 4 (Test Management & Configuration)
-Plan: 4 of 6 in current phase
+Plan: 5 of 6 in current phase
 Status: In progress
-Last activity: 2026-01-23 — Completed 02-05-PLAN.md (Prompt configuration panel)
+Last activity: 2026-01-23 — Completed 02-04-PLAN.md (Test case detail & edit)
 
-Progress: [███░░░░░░░] 35% (1/4 phases complete, Phase 2 in progress)
+Progress: [███░░░░░░░] 40% (1/4 phases complete, Phase 2 in progress)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 2.8min
-- Total execution time: 0.23 hours
+- Total plans completed: 6
+- Average duration: 2.5min
+- Total execution time: 0.25 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation & Data | 2/2 | 7min | 3.5min |
-| 2. Test Management & Configuration | 3/6 | 8min | 2.7min |
+| 2. Test Management & Configuration | 4/6 | 10min | 2.5min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (4min), 02-01 (4min), 02-03 (2min), 02-05 (2min)
-- Trend: Improving velocity (Phase 2 averaging 2.7min vs Phase 1 3.5min)
+- Last 5 plans: 02-01 (4min), 02-03 (2min), 02-05 (2min), 02-04 (2min)
+- Trend: Consistent velocity in Phase 2 (2.5min average)
 
 *Updated after each plan completion*
 
@@ -79,6 +79,13 @@ Recent decisions affecting current work:
 - Namespaced localStorage keys: festival-evaluator:system-prompt, festival-evaluator:claude-model
 - Sidebar layout with PromptConfig visible on all routes
 
+**From 02-04 (Test case detail & edit):**
+- Delete confirmation uses modal overlay instead of browser confirm()
+- Edit page keeps existing image by default, requires explicit removal
+- Image state management tracks existingImageHash + imageFile + removeImage flag
+- Lineup displayed as bulleted list per CONTEXT.md requirements
+- Delete flow only from detail page with confirmation dialog
+
 ### Pending Todos
 
 None yet.
@@ -99,10 +106,10 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-23
-Stopped at: Completed 02-05-PLAN.md (Prompt configuration panel)
+Stopped at: Completed 02-04-PLAN.md (Test case detail & edit)
 Resume file: None
-Next action: Continue with next plan in Phase 2 (Test Management & Configuration)
+Next action: Continue with plan 02-06 in Phase 2 (Test Management & Configuration)
 
 ---
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-23 after 02-05 completion*
+*Last updated: 2026-01-23 after 02-04 completion*
