@@ -61,6 +61,12 @@ Recent decisions affecting current work:
 - getImageUrl returns URL string directly for img src attributes
 - 204 No Content responses handled explicitly in API client
 
+**From 02-02 (Test case list with card grid):**
+- CSS Grid with auto-fit/minmax for responsive layout (1-4 columns without media queries)
+- 16:9 aspect ratio for card images using object-fit: cover
+- Entire card clickable for better UX (larger click target)
+- Loading/error/empty state handling pattern established
+
 **From 02-03 (Test case creation):**
 - Replace lineup textarea content on import (simpler than append)
 - No artist deduplication - user may intentionally have duplicates
@@ -83,6 +89,12 @@ None yet.
 - Evaluation methodology critical: Avoid exact string matching pitfall (research recommends normalized entity comparison, but user requires strict string matching per PROJECT.md scope)
 - Rate limiting needed for batch testing to avoid Claude API 429 errors
 - ~~Image storage strategy must support content-addressed deduplication~~ RESOLVED: Implemented in 01-02
+
+**From 02-02 (Git history issue):**
+- Plans executed out of order: 02-02 Task 1 committed (4075956), then 02-03 and 02-05 executed, creating TestCaseCard before 02-02 Task 2 completed
+- Commit 4075956 imports TestCaseCard which doesn't exist until e8373f6 (02-05)
+- Not a runtime issue (HEAD state is correct), but affects git bisect and historical checkout
+- Consider interactive rebase if clean git history is critical for debugging
 
 ## Session Continuity
 
