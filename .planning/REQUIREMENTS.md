@@ -74,29 +74,29 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TEST-01 | TBD | Pending |
-| TEST-02 | TBD | Pending |
-| TEST-03 | TBD | Pending |
-| TEST-04 | TBD | Pending |
-| PROMPT-01 | TBD | Pending |
-| PROMPT-02 | TBD | Pending |
-| EXEC-01 | TBD | Pending |
-| EXEC-02 | TBD | Pending |
-| EXEC-03 | TBD | Pending |
-| EVAL-01 | TBD | Pending |
-| EVAL-02 | TBD | Pending |
-| EVAL-03 | TBD | Pending |
-| RSLT-01 | TBD | Pending |
-| RSLT-02 | TBD | Pending |
-| RSLT-03 | TBD | Pending |
-| DATA-01 | TBD | Pending |
-| DATA-02 | TBD | Pending |
+| DATA-01 | Phase 1 | Pending |
+| DATA-02 | Phase 1 | Pending |
+| TEST-01 | Phase 2 | Pending |
+| TEST-02 | Phase 2 | Pending |
+| TEST-03 | Phase 2 | Pending |
+| TEST-04 | Phase 2 | Pending |
+| PROMPT-01 | Phase 2 | Pending |
+| PROMPT-02 | Phase 2 | Pending |
+| EXEC-01 | Phase 3 | Pending |
+| EXEC-02 | Phase 3 | Pending |
+| EXEC-03 | Phase 3 | Pending |
+| EVAL-01 | Phase 3 | Pending |
+| EVAL-02 | Phase 3 | Pending |
+| EVAL-03 | Phase 3 | Pending |
+| RSLT-01 | Phase 4 | Pending |
+| RSLT-02 | Phase 4 | Pending |
+| RSLT-03 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 17 total
-- Mapped to phases: 0
-- Unmapped: 17 (pending roadmap)
+- Mapped to phases: 17
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-01-22*
-*Last updated: 2026-01-22 after initial definition*
+*Last updated: 2026-01-22 after roadmap creation*
