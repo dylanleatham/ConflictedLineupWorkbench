@@ -79,11 +79,13 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. User can view results table showing expected vs actual lineup for each test
   2. User can see pass/fail status at a glance for each test
-  3. User can export results as CSV or JSON for external analysis
-**Plans**: TBD
+  3. User can export results as JSON for external analysis
+**Plans**: 3 plans
 
 Plans:
-- [ ] 04-01: [TBD - to be defined during phase planning]
+- [ ] 04-01-PLAN.md - Export utility and Results page foundation
+- [ ] 04-02-PLAN.md - Results table with expandable rows and pass/fail icons
+- [ ] 04-03-PLAN.md - Integration, auto-navigation, and navigation links
 
 ## Progress
 
@@ -95,8 +97,8 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | 1. Foundation & Data | 2/2 | Complete | 2026-01-22 |
 | 2. Test Management & Configuration | 6/6 | Complete | 2026-01-23 |
 | 3. Execution & Evaluation | 4/4 | Complete | 2026-01-24 |
-| 4. Results & Export | 0/0 | Not started | - |
+| 4. Results & Export | 0/3 | Planned | - |
 
 ---
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-24 - Phase 3 complete (4/4 plans executed)*
+*Last updated: 2026-01-23 - Phase 4 planned (3 plans created)*
