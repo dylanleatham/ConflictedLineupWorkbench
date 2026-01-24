@@ -13,7 +13,7 @@ This roadmap delivers a prompt engineering workbench for testing Claude models a
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Data** - Storage infrastructure and image handling
-- [ ] **Phase 2: Test Management & Configuration** - Test case CRUD and prompt configuration
+- [x] **Phase 2: Test Management & Configuration** - Test case CRUD and prompt configuration
 - [ ] **Phase 3: Execution & Evaluation** - Run tests and measure results
 - [ ] **Phase 4: Results & Export** - Display results and export capabilities
 
@@ -46,12 +46,12 @@ Plans:
 **Plans**: 6 plans
 
 Plans:
-- [ ] 02-01-PLAN.md - Frontend foundation with React, routing, and API client
-- [ ] 02-02-PLAN.md - Test case list with responsive card grid and thumbnails
-- [ ] 02-03-PLAN.md - Test case creation with image upload and ground truth input
-- [ ] 02-04-PLAN.md - Test case detail, edit, and delete functionality
-- [ ] 02-05-PLAN.md - Prompt configuration panel with localStorage persistence
-- [ ] 02-06-PLAN.md - End-to-end verification checkpoint
+- [x] 02-01-PLAN.md - Frontend foundation with React, routing, and API client
+- [x] 02-02-PLAN.md - Test case list with responsive card grid and thumbnails
+- [x] 02-03-PLAN.md - Test case creation with image upload and ground truth input
+- [x] 02-04-PLAN.md - Test case detail, edit, and delete functionality
+- [x] 02-05-PLAN.md - Prompt configuration panel with localStorage persistence
+- [x] 02-06-PLAN.md - End-to-end verification checkpoint
 
 ### Phase 3: Execution & Evaluation
 **Goal**: User can run tests and get accuracy measurements
@@ -64,10 +64,13 @@ Plans:
   4. System compares extracted lineups against ground truth using strict string matching
   5. User sees percentage of artists matched for each test
   6. User sees how many tests achieved 100% accuracy
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] 03-01: [TBD - to be defined during phase planning]
+- [ ] 03-01-PLAN.md - Backend services for Claude API and accuracy evaluation
+- [ ] 03-02-PLAN.md - Execution API endpoints (individual and batch)
+- [ ] 03-03-PLAN.md - Individual test execution UI on detail page
+- [ ] 03-04-PLAN.md - Batch execution UI with progress and results modal
 
 ### Phase 4: Results & Export
 **Goal**: User can analyze test results and export data
@@ -90,10 +93,10 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Data | 2/2 | Complete | 2026-01-22 |
-| 2. Test Management & Configuration | 0/6 | Planned | - |
-| 3. Execution & Evaluation | 0/0 | Not started | - |
+| 2. Test Management & Configuration | 6/6 | Complete | 2026-01-23 |
+| 3. Execution & Evaluation | 0/4 | Planned | - |
 | 4. Results & Export | 0/0 | Not started | - |
 
 ---
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-23 - Phase 2 planned (6 plans in 4 waves)*
+*Last updated: 2026-01-23 - Phase 2 complete (6/6 plans executed)*
