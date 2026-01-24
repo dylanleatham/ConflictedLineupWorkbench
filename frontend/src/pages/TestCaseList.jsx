@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { getTestCases } from '../api/testCases'
 import TestCaseCard from '../components/TestCaseCard'
 import { useBatchExecution } from '../hooks/useBatchExecution'
@@ -7,11 +7,12 @@ import { useStickyState } from '../hooks/useStickyState'
 import BatchProgress from '../components/BatchProgress'
 import BatchResultsModal from '../components/BatchResultsModal'
 
-function TestCaseList() {
+function TestCaseList({ onBatchComplete }) {
   const [testCases, setTestCases] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+  const navigate = useNavigate()
   const { start, cancel, reset, progress, results, isRunning, error: batchError } = useBatchExecution()
 
   const [systemPrompt] = useStickyState(
@@ -39,6 +40,23 @@ function TestCaseList() {
 
     fetchTestCases()
   }, [])
+
+  // Auto-navigate to results page when batch completes
+  useEffect(() => {
+    if (progress?.status === 'complete') {
+      // Get current config from localStorage
+      const model = localStorage.getItem('festival-evaluator:claude-model') || 'claude-sonnet-4-20250514'
+      const systemPrompt = localStorage.getItem('festival-evaluator:system-prompt') || ''
+
+      // Call parent callback to store results
+      if (onBatchComplete) {
+        onBatchComplete(progress, { model, system_prompt: systemPrompt })
+      }
+
+      // Navigate to results page
+      navigate('/results')
+    }
+  }, [progress?.status, navigate, onBatchComplete])
 
   const handleRunAll = (mode) => {
     const testIds = testCases.map(tc => tc.id)
@@ -104,7 +122,6 @@ function TestCaseList() {
       )}
 
       {isRunning && <BatchProgress progress={progress} onCancel={cancel} />}
-      {results && <BatchResultsModal results={results} onClose={reset} />}
 
       {testCases.length === 0 ? (
         <div className="empty-state">
