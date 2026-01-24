@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import PromptConfig from './components/PromptConfig'
 import TestCaseList from './pages/TestCaseList'
@@ -13,6 +13,12 @@ function App() {
   const [batchResults, setBatchResults] = useState(null)
   const [batchConfig, setBatchConfig] = useState(null)
 
+  // Memoize callback to prevent infinite re-render loop
+  const handleBatchComplete = useCallback((results, config) => {
+    setBatchResults(results)
+    setBatchConfig(config)
+  }, [])
+
   return (
     <BrowserRouter>
       <div className="app-layout">
@@ -23,10 +29,7 @@ function App() {
               path="/"
               element={
                 <TestCaseList
-                  onBatchComplete={(results, config) => {
-                    setBatchResults(results)
-                    setBatchConfig(config)
-                  }}
+                  onBatchComplete={handleBatchComplete}
                 />
               }
             />
