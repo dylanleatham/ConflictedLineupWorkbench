@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useStickyState } from '../hooks/useStickyState';
 import './PromptConfig.css';
 
@@ -23,6 +24,11 @@ function PromptConfig() {
 
   return (
     <aside className="prompt-config">
+      <nav style={styles.nav}>
+        <Link to="/" style={styles.navLink}>Test Cases</Link>
+        <Link to="/results" style={styles.navLink}>Results</Link>
+      </nav>
+
       <h2>Prompt Configuration</h2>
 
       <div className="form-group">
@@ -53,6 +59,20 @@ function PromptConfig() {
       </div>
     </aside>
   );
+}
+
+const styles = {
+  nav: {
+    marginBottom: '20px',
+    paddingBottom: '15px',
+    borderBottom: '1px solid #ddd'
+  },
+  navLink: {
+    display: 'block',
+    padding: '8px 0',
+    color: '#007bff',
+    textDecoration: 'none'
+  }
 }
 
 export default PromptConfig;
