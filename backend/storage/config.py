@@ -2,8 +2,9 @@
 
 from pathlib import Path
 
-# Storage directory structure
-STORAGE_DIR = Path(".festival-tests")
+# Storage directory structure (relative to project root)
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+STORAGE_DIR = PROJECT_ROOT / ".festival-tests"
 DATA_DIR = STORAGE_DIR / "data"
 IMAGES_DIR = STORAGE_DIR / "images"
 

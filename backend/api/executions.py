@@ -154,7 +154,7 @@ async def execute_test(test_id: str, mode: str, request: ExecutionRequest) -> Ex
                 model=request.model
             )
         else:  # image mode
-            image_path = IMAGES_DIR / test_case.image_hash
+            image_path = IMAGES_DIR / f"{test_case.image_hash}.jpg"
             extracted_lineup = await extract_lineup_from_image(
                 image_path=image_path,
                 system_prompt=request.system_prompt,
@@ -258,7 +258,7 @@ async def run_batch_execution(batch_id: str, test_ids: List[str]) -> None:
                     model=state.model
                 )
             else:  # image mode
-                image_path = IMAGES_DIR / test_case.image_hash
+                image_path = IMAGES_DIR / f"{test_case.image_hash}.jpg"
                 extracted_lineup = await extract_lineup_from_image(
                     image_path=image_path,
                     system_prompt=state.system_prompt,
