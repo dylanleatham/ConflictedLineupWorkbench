@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { getTestCase, deleteTestCase } from '../api/testCases'
 import { getImageUrl } from '../api/images'
+import { useExecution } from '../hooks/useExecution'
+import { useStickyState } from '../hooks/useStickyState'
+import ExecutionResult from '../components/ExecutionResult'
 
 function TestCaseDetail() {
   const { id } = useParams()
@@ -15,6 +18,19 @@ function TestCaseDetail() {
   const [error, setError] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+
+  // Execution state
+  const { execute, isExecuting, result, error: execError, reset } = useExecution()
+
+  // Get prompt config from localStorage (same keys as PromptConfig)
+  const [systemPrompt] = useStickyState(
+    'Extract the festival lineup from this image. Return a JSON array of artist names.',
+    'festival-evaluator:system-prompt'
+  )
+  const [claudeModel] = useStickyState(
+    'claude-sonnet-4-20250514',
+    'festival-evaluator:claude-model'
+  )
 
   /**
    * Load test case data on mount.
@@ -69,6 +85,35 @@ function TestCaseDetail() {
     setShowDeleteConfirm(false)
   }
 
+  /**
+   * Run text-based test (uses festival name).
+   */
+  const handleRunText = async () => {
+    try {
+      await execute(id, 'text', { system_prompt: systemPrompt, model: claudeModel })
+    } catch {
+      // Error is handled by useExecution hook
+    }
+  }
+
+  /**
+   * Run image-based test (uses festival image).
+   */
+  const handleRunImage = async () => {
+    try {
+      await execute(id, 'image', { system_prompt: systemPrompt, model: claudeModel })
+    } catch {
+      // Error is handled by useExecution hook
+    }
+  }
+
+  /**
+   * Clear execution result.
+   */
+  const handleClearResult = () => {
+    reset()
+  }
+
   // Loading state
   if (isLoading) {
     return (
@@ -113,7 +158,7 @@ function TestCaseDetail() {
       </div>
 
       <Link to="/" style={styles.backLink}>
-        ← Back to List
+        Back to List
       </Link>
 
       {/* Error message (for delete errors) */}
@@ -122,6 +167,52 @@ function TestCaseDetail() {
           <strong>Error:</strong> {error}
         </div>
       )}
+
+      {/* Run test section */}
+      <div style={styles.runSection}>
+        <h2 style={styles.sectionTitle}>Run Test</h2>
+        <div style={styles.runButtons}>
+          <button
+            onClick={handleRunText}
+            disabled={isExecuting}
+            style={styles.runButton}
+          >
+            {isExecuting ? 'Running...' : 'Run Text Test'}
+          </button>
+          {testCase.image_hash && (
+            <button
+              onClick={handleRunImage}
+              disabled={isExecuting}
+              style={styles.runButton}
+            >
+              {isExecuting ? 'Running...' : 'Run Image Test'}
+            </button>
+          )}
+          {result && (
+            <button
+              onClick={handleClearResult}
+              style={styles.clearButton}
+            >
+              Clear Result
+            </button>
+          )}
+        </div>
+        {isExecuting && (
+          <p style={styles.executingText}>
+            Executing test with {claudeModel}...
+          </p>
+        )}
+      </div>
+
+      {/* Execution error */}
+      {execError && (
+        <div style={styles.error}>
+          <strong>Execution error:</strong> {execError}
+        </div>
+      )}
+
+      {/* Execution result */}
+      <ExecutionResult result={result} />
 
       {/* Image display */}
       <div style={styles.imageSection}>
@@ -238,6 +329,42 @@ const styles = {
     borderRadius: '4px',
     color: '#c00',
     marginBottom: '20px',
+  },
+  runSection: {
+    marginBottom: '30px',
+    padding: '20px',
+    backgroundColor: '#f8f9fa',
+    borderRadius: '8px',
+    border: '1px solid #dee2e6',
+  },
+  runButtons: {
+    display: 'flex',
+    gap: '10px',
+    flexWrap: 'wrap',
+  },
+  runButton: {
+    padding: '12px 24px',
+    fontSize: '16px',
+    backgroundColor: '#28a745',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+  },
+  clearButton: {
+    padding: '12px 24px',
+    fontSize: '16px',
+    backgroundColor: '#6c757d',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  },
+  executingText: {
+    marginTop: '15px',
+    color: '#666',
+    fontStyle: 'italic',
   },
   imageSection: {
     marginBottom: '30px',
