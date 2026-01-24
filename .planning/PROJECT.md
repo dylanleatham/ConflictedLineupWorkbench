@@ -12,19 +12,20 @@ Accurately measure which combination of system prompt + Claude model produces th
 
 ### Validated
 
-(None yet — ship to validate)
+- Test case CRUD (add/edit/delete with festival name, image, ground truth) — v1.0
+- Custom system prompt input — v1.0
+- Claude model selection — v1.0
+- Text-based test execution (festival name → lineup) — v1.0
+- Image-based test execution (festival image → lineup) — v1.0
+- Batch test execution against all test cases — v1.0
+- Aggregate results (percentage match + perfect score count) — v1.0
+- Test case persistence between sessions — v1.0
+- Local image storage with deduplication — v1.0
+- Results export as JSON — v1.0
 
 ### Active
 
-- [ ] User can add/edit/delete test cases (festival name, image, ground truth lineup)
-- [ ] User can paste a custom system prompt
-- [ ] User can select which Claude model to use
-- [ ] User can run text-based tests (festival name → lineup)
-- [ ] User can run image-based tests (festival image → lineup)
-- [ ] User can run batch tests against all test cases
-- [ ] User can see aggregate results (percentage match + perfect score count)
-- [ ] Test cases persist between sessions
-- [ ] Images stored locally and referenced by test cases
+(None — next milestone TBD)
 
 ### Out of Scope
 
@@ -32,33 +33,35 @@ Accurately measure which combination of system prompt + Claude model produces th
 - Production service — this is the testing tool, not the final app
 - Cloud deployment — local development tool
 - Multi-user support — single user tool
+- Test run history — deferred to v2
+- Cost/latency tracking — deferred to v2
 
 ## Context
 
-The user is building a production service that extracts festival lineups from images/text using Claude. Before building that service, they need to determine the best prompting strategy. This tool lets them:
+Shipped v1.0 with ~5,000 LOC (Python + React).
 
-1. Define test cases with known ground truth (real festival lineups)
-2. Try different system prompts and models
-3. Measure accuracy objectively
-4. Take the winning prompt to production
+Tech stack: FastAPI backend, React + Vite frontend, JSON file storage, content-addressed image storage.
 
-Test data is small (handful of festivals) with locally stored images.
+The tool is ready for user testing to find the optimal prompt strategy. Next step is to use it on real festival data, then take the winning prompt to production.
 
 ## Constraints
 
-- **API**: Claude completion API (Anthropic)
+- **API**: Claude completion API (Anthropic) — requires ANTHROPIC_API_KEY env var
 - **Backend**: Python + FastAPI
-- **Frontend**: React (interactive UI)
-- **Storage**: Local (images + test case persistence)
+- **Frontend**: React + Vite
+- **Storage**: Local JSON files + images in .festival-tests/
 - **Matching**: Exact string comparison only
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Strict string matching | User wants precise evaluation, no fuzzy logic | — Pending |
-| Local-only tool | Development/testing use case, no need for deployment | — Pending |
-| Test data in UI | User prefers managing test cases through interface rather than config files | — Pending |
+| Strict string matching | User wants precise evaluation, no fuzzy logic | Good |
+| Local-only tool | Development/testing use case, no need for deployment | Good |
+| Test data in UI | User prefers managing test cases through interface rather than config files | Good |
+| JSON file storage | Simple, human-readable, sufficient for handful of test cases | Good |
+| Content-addressed images | SHA-256 hash for deduplication, automatic optimization | Good |
+| localStorage for config | Prompt/model persist across page refreshes without backend | Good |
 
 ---
-*Last updated: 2026-01-22 after initialization*
+*Last updated: 2026-01-24 after v1.0 milestone*
