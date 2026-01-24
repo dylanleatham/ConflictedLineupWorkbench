@@ -2,11 +2,26 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { getTestCases } from '../api/testCases'
 import TestCaseCard from '../components/TestCaseCard'
+import { useBatchExecution } from '../hooks/useBatchExecution'
+import { useStickyState } from '../hooks/useStickyState'
+import BatchProgress from '../components/BatchProgress'
+import BatchResultsModal from '../components/BatchResultsModal'
 
 function TestCaseList() {
   const [testCases, setTestCases] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+
+  const { start, cancel, reset, progress, results, isRunning, error: batchError } = useBatchExecution()
+
+  const [systemPrompt] = useStickyState(
+    'Extract the festival lineup from this image. Return a JSON array of artist names.',
+    'festival-evaluator:system-prompt'
+  )
+  const [claudeModel] = useStickyState(
+    'claude-sonnet-4-20250514',
+    'festival-evaluator:claude-model'
+  )
 
   useEffect(() => {
     async function fetchTestCases() {
@@ -24,6 +39,11 @@ function TestCaseList() {
 
     fetchTestCases()
   }, [])
+
+  const handleRunAll = (mode) => {
+    const testIds = testCases.map(tc => tc.id)
+    start(testIds, mode, { system_prompt: systemPrompt, model: claudeModel })
+  }
 
   if (loading) {
     return (
@@ -48,10 +68,43 @@ function TestCaseList() {
     <div className="container">
       <div className="page-header">
         <h1>Test Cases</h1>
-        <Link to="/test-cases/new" className="button-primary">
-          Add Test Case
-        </Link>
+        <div style={styles.actions}>
+          <Link to="/test-cases/new" className="button-primary">
+            Add Test Case
+          </Link>
+          <button
+            onClick={() => handleRunAll('text')}
+            disabled={isRunning || testCases.length === 0}
+            style={{
+              ...styles.runAllButton,
+              opacity: isRunning || testCases.length === 0 ? 0.6 : 1,
+              cursor: isRunning || testCases.length === 0 ? 'not-allowed' : 'pointer'
+            }}
+          >
+            Run All (Text)
+          </button>
+          <button
+            onClick={() => handleRunAll('image')}
+            disabled={isRunning || testCases.length === 0}
+            style={{
+              ...styles.runAllButton,
+              opacity: isRunning || testCases.length === 0 ? 0.6 : 1,
+              cursor: isRunning || testCases.length === 0 ? 'not-allowed' : 'pointer'
+            }}
+          >
+            Run All (Image)
+          </button>
+        </div>
       </div>
+
+      {batchError && (
+        <div className="error" style={{ marginBottom: '20px' }}>
+          <p>Batch error: {batchError}</p>
+        </div>
+      )}
+
+      {isRunning && <BatchProgress progress={progress} onCancel={cancel} />}
+      {results && <BatchResultsModal results={results} onClose={reset} />}
 
       {testCases.length === 0 ? (
         <div className="empty-state">
@@ -70,6 +123,24 @@ function TestCaseList() {
       )}
     </div>
   )
+}
+
+const styles = {
+  actions: {
+    display: 'flex',
+    gap: '10px',
+    alignItems: 'center'
+  },
+  runAllButton: {
+    padding: '10px 20px',
+    backgroundColor: '#28a745',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: '500'
+  }
 }
 
 export default TestCaseList
