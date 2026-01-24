@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { exportBatchResults } from '../utils/export'
+import ResultsTable from '../components/ResultsTable'
 
 function ResultsPage({ batchResults, config }) {
   // Empty state - no results yet
@@ -63,11 +64,8 @@ function ResultsPage({ batchResults, config }) {
       borderRadius: '8px',
       padding: '20px'
     }}>
-      {/* Header with title and export button */}
+      {/* Header with title and back link */}
       <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
         marginBottom: '24px',
         borderBottom: '2px solid #e0e0e0',
         paddingBottom: '16px'
@@ -75,56 +73,26 @@ function ResultsPage({ batchResults, config }) {
         <h1 style={{
           fontSize: '28px',
           margin: 0,
+          marginBottom: '12px',
           color: '#333'
         }}>
           Batch Results
         </h1>
-        <button
-          onClick={handleExport}
+        <Link
+          to="/"
           style={{
-            padding: '10px 20px',
-            backgroundColor: '#28a745',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
+            color: '#007bff',
+            textDecoration: 'none',
             fontSize: '14px',
-            fontWeight: '500',
-            cursor: 'pointer',
-            transition: 'background-color 0.2s'
+            fontWeight: '500'
           }}
-          onMouseEnter={(e) => e.target.style.backgroundColor = '#218838'}
-          onMouseLeave={(e) => e.target.style.backgroundColor = '#28a745'}
         >
-          Export JSON
-        </button>
+          ← Back to Test Cases
+        </Link>
       </div>
 
-      {/* Summary section placeholder */}
-      <div style={{
-        padding: '16px',
-        backgroundColor: '#f8f9fa',
-        borderRadius: '6px',
-        marginBottom: '20px'
-      }}>
-        <p style={{
-          margin: 0,
-          color: '#666',
-          fontSize: '14px'
-        }}>
-          Summary section coming soon...
-        </p>
-      </div>
-
-      {/* Results table placeholder */}
-      <div style={{
-        padding: '40px',
-        textAlign: 'center',
-        backgroundColor: '#f8f9fa',
-        borderRadius: '6px',
-        color: '#666'
-      }}>
-        Results table coming soon...
-      </div>
+      {/* Results table with integrated summary and export */}
+      <ResultsTable results={batchResults} onExport={handleExport} />
     </div>
   )
 }
