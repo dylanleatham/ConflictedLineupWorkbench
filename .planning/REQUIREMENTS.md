@@ -31,9 +31,9 @@
 
 ### Results
 
-- [ ] **RSLT-01**: User can view results table with expected vs actual output
-- [ ] **RSLT-02**: User can see pass/fail status for each test
-- [ ] **RSLT-03**: User can export results as CSV/JSON
+- [x] **RSLT-01**: User can view results table with expected vs actual output
+- [x] **RSLT-02**: User can see pass/fail status for each test
+- [x] **RSLT-03**: User can export results as CSV/JSON
 
 ### Persistence
 
@@ -88,15 +88,15 @@
 | EVAL-01 | Phase 3 | Complete |
 | EVAL-02 | Phase 3 | Complete |
 | EVAL-03 | Phase 3 | Complete |
-| RSLT-01 | Phase 4 | Pending |
-| RSLT-02 | Phase 4 | Pending |
-| RSLT-03 | Phase 4 | Pending |
+| RSLT-01 | Phase 4 | Complete |
+| RSLT-02 | Phase 4 | Complete |
+| RSLT-03 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 17 total
-- Complete: 14
-- Pending: 3 (Phase 4)
+- Complete: 17
+- Pending: 0
 
 ---
 *Requirements defined: 2026-01-22*
-*Last updated: 2026-01-24 - Phase 3 requirements complete*
+*Last updated: 2026-01-24 - All v1 requirements complete*

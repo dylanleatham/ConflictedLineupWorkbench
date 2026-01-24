@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-22)
 
 **Core value:** Accurately measure which combination of system prompt + Claude model produces the most correct festival lineup extractions.
-**Current focus:** Phase 4 - Results Display
+**Current focus:** Milestone Complete
 
 ## Current Position
 
-Phase: 4 of 4 (Results & Export)
-Plan: 3 of 4 complete
-Status: In progress
-Last activity: 2026-01-24 — Completed 04-03-PLAN.md (Results Page Integration)
+Phase: 4 of 4 (Results & Export) COMPLETE
+Plan: 3 of 3 complete
+Status: Milestone complete
+Last activity: 2026-01-24 — Completed Phase 4 + orchestrator fix for auto-navigation
 
-Progress: [█████████░] 94% (15/16 plans complete)
+Progress: [██████████] 100% (15/15 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
 - Total plans completed: 15
-- Average duration: 2.2min
-- Total execution time: 0.57 hours
+- Average duration: 2.1min
+- Total execution time: 0.53 hours
 
 **By Phase:**
 
@@ -30,11 +30,11 @@ Progress: [█████████░] 94% (15/16 plans complete)
 | 1. Foundation & Data | 2/2 | 7min | 3.5min |
 | 2. Test Management & Configuration | 6/6 | 15min | 2.5min |
 | 3. Execution & Evaluation | 4/4 | 9min | 2.25min |
-| 4. Results & Export | 3/4 | 6min | 2.0min |
+| 4. Results & Export | 3/3 | 6min | 2.0min |
 
 **Recent Trend:**
 - Last 5 plans: 03-04 (2min), 04-01 (2min), 04-02 (2min), 04-03 (2min)
-- Trend: Consistent 2min velocity, Phase 4 75% complete
+- Trend: Consistent ~2min velocity, all phases complete
 
 *Updated after each plan completion*
 
@@ -43,126 +43,43 @@ Progress: [█████████░] 94% (15/16 plans complete)
 ### Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
-
-**From 01-01 (Test case persistence):**
-- JSON file format (one per test case) chosen for simplicity, human-readability, git-friendliness
-- Atomic write pattern (temp file + rename) prevents corruption
-- Skip corrupted files with logging instead of crashing
-- Delete JSON but preserve images (may be shared via content-addressing)
-
-**From 01-02 (Image storage & REST API):**
-- Hash optimized bytes, not original (deduplication based on stored content)
-- Slugify + timestamp for test case IDs (simple uniqueness without database)
-- CORS allow all origins for local development (needs restriction for production)
-- Async FastAPI handlers for scalability
-
-**From 02-01 (Frontend foundation):**
-- Vite proxy forwards /api to http://localhost:8000 for backend communication
-- API client uses centralized error handling extracting FastAPI error detail
-- getImageUrl returns URL string directly for img src attributes
-- 204 No Content responses handled explicitly in API client
-
-**From 02-02 (Test case list with card grid):**
-- CSS Grid with auto-fit/minmax for responsive layout (1-4 columns without media queries)
-- 16:9 aspect ratio for card images using object-fit: cover
-- Entire card clickable for better UX (larger click target)
-- Loading/error/empty state handling pattern established
-
-**From 02-03 (Test case creation):**
-- Replace lineup textarea content on import (simpler than append)
-- No artist deduplication - user may intentionally have duplicates
-- Trim whitespace and filter empty lines from ground truth input
-- Blob URL lifecycle management with cleanup hooks prevents memory leaks
-
-**From 02-05 (Prompt configuration panel):**
-- useStickyState hook with lazy initialization from localStorage
-- JSON serialization for localStorage values with error handling
-- Namespaced localStorage keys: festival-evaluator:system-prompt, festival-evaluator:claude-model
-- Sidebar layout with PromptConfig visible on all routes
-
-**From 02-04 (Test case detail & edit):**
-- Delete confirmation uses modal overlay instead of browser confirm()
-- Edit page keeps existing image by default, requires explicit removal
-- Image state management tracks existingImageHash + imageFile + removeImage flag
-- Lineup displayed as bulleted list per CONTEXT.md requirements
-- Delete flow only from detail page with confirmation dialog
-
-**From 03-01 (Backend services):**
-- Set operations for match/miss/extra breakdown (O(n) complexity)
-- Case-insensitive comparison via normalize (strip + lowercase)
-- Original casing preserved in result lists (matched_artists uses ground truth casing)
-- Multiple JSON parse strategies for Claude's varied response formats
-- 60-second default timeout for API calls (configurable)
-
-**From 03-02 (Execution API endpoints):**
-- In-memory batch state storage (no persistence across restarts)
-- UUID for batch identification (globally unique)
-- Cancelled flag checked before each test (graceful cancellation)
-- Failed tests don't stop batch - continue to next test
-- Average accuracy calculated only from successful tests
-
-**From 03-03 (Frontend Execution UI):**
-- Shared localStorage keys with PromptConfig for consistent config
-- Run Image Test button only shown when test case has image_hash
-- Color-coded accuracy: green (matched), red (missed), orange (extra)
-- Perfect 100% accuracy gets celebratory styling
-
-**From 03-04 (Batch Execution UI):**
-- 1-second polling interval for batch progress updates
-- Modal portal uses dedicated modal-root div alongside root
-- Run All buttons disabled during execution and when no test cases
-- Cancelled state shows "Cancelling..." text (graceful stop)
-
-**Orchestrator fix (Phase 3 verification):**
-- ExecutionResult.jsx field name mismatch corrected: accuracy.missed/extra not missed_artists/extra_artists
-- Commit 6ad4a2c fixed the bug found during verification
+Key decisions across all phases:
 
 **From 04-01 (Results Export Foundation):**
 - Client-side JSON export using Blob API with proper cleanup (URL.revokeObjectURL)
 - Batch results state lifted to App level for cross-component access
 - Export includes config (model, system_prompt) and calculated summary statistics
-- Empty state pattern: centered message with CTA button back to primary flow
-- Summary calculation: filter by status, calculate average from successful tests only
 
 **From 04-02 (Results Table Components):**
-- Pass criteria: 100% accuracy AND no extra artists (stricter than phase 3 "perfect" display)
-- Set-based expanded row tracking for O(1) lookup and independent multi-row expansion
+- Pass criteria: 100% accuracy AND no extra artists
+- Set-based expanded row tracking for O(1) lookup
 - Color scheme matches ExecutionResult (#155724 matched, #721c24 missed, #856404 extra)
-- Unicode icons for status: ✓ (pass, green), ✗ (fail, red), ⚠ (error, yellow/gray)
-- Summary stats prominence: 28px main stat, celebratory green styling for all-pass batches
 
 **From 04-03 (Results Page Integration):**
-- Auto-navigate to /results immediately on batch completion via useEffect watching progress.status
-- Config retrieved from localStorage at completion time rather than passing through components
-- Navigation links in sidebar (PromptConfig) above configuration controls for discoverability
-- BatchResultsModal removed from rendering (replaced by dedicated results page)
-- Results state persists in App until next batch or page reload
+- Auto-navigation triggers when `results && !isRunning`
+- Pass `results` (BatchSummary) to onBatchComplete, not `progress` (BatchProgress)
+- Navigation links in sidebar for Test Cases and Results
+
+**Orchestrator fix (Phase 4 verification):**
+- TestCaseList.jsx auto-navigation fixed: changed from checking `progress?.status` to `results && !isRunning`
+- Changed `onBatchComplete(progress, config)` to `onBatchComplete(results, config)`
+- Commit de63876 fixed the integration bug found during verification
 
 ### Pending Todos
 
-None yet.
+None.
 
 ### Blockers/Concerns
 
-**From Research:**
-- Evaluation methodology critical: Avoid exact string matching pitfall (research recommends normalized entity comparison, but user requires strict string matching per PROJECT.md scope)
-- Rate limiting needed for batch testing to avoid Claude API 429 errors
-- ~~Image storage strategy must support content-addressed deduplication~~ RESOLVED: Implemented in 01-02
-
-**From 02-02 (Git history issue):**
-- Plans executed out of order: 02-02 Task 1 committed (4075956), then 02-03 and 02-05 executed, creating TestCaseCard before 02-02 Task 2 completed
-- Commit 4075956 imports TestCaseCard which doesn't exist until e8373f6 (02-05)
-- Not a runtime issue (HEAD state is correct), but affects git bisect and historical checkout
-- Consider interactive rebase if clean git history is critical for debugging
+All resolved. Milestone complete.
 
 ## Session Continuity
 
 Last session: 2026-01-24
-Stopped at: Completed 04-03-PLAN.md (Results Page Integration)
+Stopped at: Milestone complete - all 4 phases done
 Resume file: None
-Next action: Continue Phase 4 - implement 04-04 (final plan in Results & Export phase)
+Next action: Run `/gsd:audit-milestone` or `/gsd:complete-milestone`
 
 ---
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-24 after 04-03 completion*
+*Last updated: 2026-01-24 after Phase 4 completion*
