@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-22)
 ## Current Position
 
 Phase: 4 of 4 (Results & Export)
-Plan: 2 of 4 complete
+Plan: 3 of 4 complete
 Status: In progress
-Last activity: 2026-01-24 — Completed 04-02-PLAN.md (Results Table Components)
+Last activity: 2026-01-24 — Completed 04-03-PLAN.md (Results Page Integration)
 
-Progress: [█████████░] 88% (14/16 plans complete)
+Progress: [█████████░] 94% (15/16 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 14
+- Total plans completed: 15
 - Average duration: 2.2min
-- Total execution time: 0.53 hours
+- Total execution time: 0.57 hours
 
 **By Phase:**
 
@@ -30,11 +30,11 @@ Progress: [█████████░] 88% (14/16 plans complete)
 | 1. Foundation & Data | 2/2 | 7min | 3.5min |
 | 2. Test Management & Configuration | 6/6 | 15min | 2.5min |
 | 3. Execution & Evaluation | 4/4 | 9min | 2.25min |
-| 4. Results & Export | 2/4 | 4min | 2.0min |
+| 4. Results & Export | 3/4 | 6min | 2.0min |
 
 **Recent Trend:**
-- Last 5 plans: 03-03 (2min), 03-04 (2min), 04-01 (2min), 04-02 (2min)
-- Trend: Consistent 2min velocity, Phase 4 halfway complete
+- Last 5 plans: 03-04 (2min), 04-01 (2min), 04-02 (2min), 04-03 (2min)
+- Trend: Consistent 2min velocity, Phase 4 75% complete
 
 *Updated after each plan completion*
 
@@ -132,6 +132,13 @@ Recent decisions affecting current work:
 - Unicode icons for status: ✓ (pass, green), ✗ (fail, red), ⚠ (error, yellow/gray)
 - Summary stats prominence: 28px main stat, celebratory green styling for all-pass batches
 
+**From 04-03 (Results Page Integration):**
+- Auto-navigate to /results immediately on batch completion via useEffect watching progress.status
+- Config retrieved from localStorage at completion time rather than passing through components
+- Navigation links in sidebar (PromptConfig) above configuration controls for discoverability
+- BatchResultsModal removed from rendering (replaced by dedicated results page)
+- Results state persists in App until next batch or page reload
+
 ### Pending Todos
 
 None yet.
@@ -152,10 +159,10 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-24
-Stopped at: Completed 04-02-PLAN.md (Results Table Components)
+Stopped at: Completed 04-03-PLAN.md (Results Page Integration)
 Resume file: None
-Next action: Continue Phase 4 - implement 04-03 (Results Page Integration)
+Next action: Continue Phase 4 - implement 04-04 (final plan in Results & Export phase)
 
 ---
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-24 after 04-02 completion*
+*Last updated: 2026-01-24 after 04-03 completion*
