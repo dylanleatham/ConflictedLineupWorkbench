@@ -113,6 +113,10 @@ Recent decisions affecting current work:
 - Run All buttons disabled during execution and when no test cases
 - Cancelled state shows "Cancelling..." text (graceful stop)
 
+**Orchestrator fix (Phase 3 verification):**
+- ExecutionResult.jsx field name mismatch corrected: accuracy.missed/extra not missed_artists/extra_artists
+- Commit 6ad4a2c fixed the bug found during verification
+
 ### Pending Todos
 
 None yet.

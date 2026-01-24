@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Data** - Storage infrastructure and image handling
 - [x] **Phase 2: Test Management & Configuration** - Test case CRUD and prompt configuration
-- [ ] **Phase 3: Execution & Evaluation** - Run tests and measure results
+- [x] **Phase 3: Execution & Evaluation** - Run tests and measure results
 - [ ] **Phase 4: Results & Export** - Display results and export capabilities
 
 ## Phase Details
@@ -58,8 +58,8 @@ Plans:
 **Depends on**: Phase 2
 **Requirements**: EXEC-01, EXEC-02, EXEC-03, EVAL-01, EVAL-02, EVAL-03
 **Success Criteria** (what must be TRUE):
-  1. User can run individual text-based tests (festival name → lineup)
-  2. User can run individual image-based tests (festival image → lineup)
+  1. User can run individual text-based tests (festival name -> lineup)
+  2. User can run individual image-based tests (festival image -> lineup)
   3. User can run batch tests against all test cases with one action
   4. System compares extracted lineups against ground truth using strict string matching
   5. User sees percentage of artists matched for each test
@@ -67,10 +67,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 03-01-PLAN.md - Backend services for Claude API and accuracy evaluation
-- [ ] 03-02-PLAN.md - Execution API endpoints (individual and batch)
-- [ ] 03-03-PLAN.md - Individual test execution UI on detail page
-- [ ] 03-04-PLAN.md - Batch execution UI with progress and results modal
+- [x] 03-01-PLAN.md - Backend services for Claude API and accuracy evaluation
+- [x] 03-02-PLAN.md - Execution API endpoints (individual and batch)
+- [x] 03-03-PLAN.md - Individual test execution UI on detail page
+- [x] 03-04-PLAN.md - Batch execution UI with progress and results modal
 
 ### Phase 4: Results & Export
 **Goal**: User can analyze test results and export data
@@ -88,15 +88,15 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Data | 2/2 | Complete | 2026-01-22 |
 | 2. Test Management & Configuration | 6/6 | Complete | 2026-01-23 |
-| 3. Execution & Evaluation | 0/4 | Planned | - |
+| 3. Execution & Evaluation | 4/4 | Complete | 2026-01-24 |
 | 4. Results & Export | 0/0 | Not started | - |
 
 ---
 *Roadmap created: 2026-01-22*
-*Last updated: 2026-01-23 - Phase 2 complete (6/6 plans executed)*
+*Last updated: 2026-01-24 - Phase 3 complete (4/4 plans executed)*
