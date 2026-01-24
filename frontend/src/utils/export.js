@@ -41,13 +41,13 @@ export function exportBatchResults(results, config) {
   const completed = results.results.filter(r => r.status === 'success').length
   const failed = results.results.filter(r => r.status === 'failed').length
   const perfect_count = results.results.filter(
-    r => r.status === 'success' && r.accuracy.accuracy === 100
+    r => r.status === 'success' && r.accuracy.accuracy_percentage === 100
   ).length
 
   // Calculate average accuracy (only from successful tests)
   const successfulTests = results.results.filter(r => r.status === 'success')
   const average_accuracy = successfulTests.length > 0
-    ? successfulTests.reduce((sum, r) => sum + r.accuracy.accuracy, 0) / successfulTests.length
+    ? successfulTests.reduce((sum, r) => sum + r.accuracy.accuracy_percentage, 0) / successfulTests.length
     : 0
 
   // Build export object
