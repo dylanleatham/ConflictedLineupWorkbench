@@ -53,8 +53,8 @@ function PromptConfig() {
         >
           <option value="claude-sonnet-4-20250514">Claude Sonnet 4</option>
           <option value="claude-opus-4-20250514">Claude Opus 4</option>
-          <option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet</option>
-          <option value="claude-3-5-haiku-20241022">Claude 3.5 Haiku</option>
+          <option value="claude-opus-4-5-20250115">Claude Opus 4.5</option>
+          <option value="claude-3-7-sonnet-20250219">Claude 3.7 Sonnet</option>
         </select>
       </div>
     </aside>
