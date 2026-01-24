@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.api import test_cases, images
+from backend.api import test_cases, images, executions
 from backend.storage import ensure_dirs
 
 
@@ -38,6 +38,7 @@ app.add_middleware(
 # Include API routers
 app.include_router(test_cases.router)
 app.include_router(images.router)
+app.include_router(executions.router)
 
 
 @app.get("/")
