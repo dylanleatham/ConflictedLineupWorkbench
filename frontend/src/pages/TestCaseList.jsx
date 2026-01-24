@@ -43,20 +43,20 @@ function TestCaseList({ onBatchComplete }) {
 
   // Auto-navigate to results page when batch completes
   useEffect(() => {
-    if (progress?.status === 'complete') {
+    if (results && !isRunning) {
       // Get current config from localStorage
       const model = localStorage.getItem('festival-evaluator:claude-model') || 'claude-sonnet-4-20250514'
       const systemPrompt = localStorage.getItem('festival-evaluator:system-prompt') || ''
 
       // Call parent callback to store results
       if (onBatchComplete) {
-        onBatchComplete(progress, { model, system_prompt: systemPrompt })
+        onBatchComplete(results, { model, system_prompt: systemPrompt })
       }
 
       // Navigate to results page
       navigate('/results')
     }
-  }, [progress?.status, navigate, onBatchComplete])
+  }, [results, isRunning, navigate, onBatchComplete])
 
   const handleRunAll = (mode) => {
     const testIds = testCases.map(tc => tc.id)
