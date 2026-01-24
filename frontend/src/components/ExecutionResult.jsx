@@ -63,14 +63,14 @@ function ExecutionResult({ result }) {
       )}
 
       {/* Missed artists */}
-      {accuracy.missed_artists && accuracy.missed_artists.length > 0 && (
+      {accuracy.missed && accuracy.missed.length > 0 && (
         <div style={styles.section}>
           <h4 style={styles.sectionTitle}>
             <span style={styles.missedDot}></span>
-            Missed ({accuracy.missed_artists.length})
+            Missed ({accuracy.missed.length})
           </h4>
           <ul style={styles.artistList}>
-            {accuracy.missed_artists.map((artist, index) => (
+            {accuracy.missed.map((artist, index) => (
               <li key={index} style={styles.missedItem}>{artist}</li>
             ))}
           </ul>
@@ -78,14 +78,14 @@ function ExecutionResult({ result }) {
       )}
 
       {/* Extra artists */}
-      {accuracy.extra_artists && accuracy.extra_artists.length > 0 && (
+      {accuracy.extra && accuracy.extra.length > 0 && (
         <div style={styles.section}>
           <h4 style={styles.sectionTitle}>
             <span style={styles.extraDot}></span>
-            Extra ({accuracy.extra_artists.length})
+            Extra ({accuracy.extra.length})
           </h4>
           <ul style={styles.artistList}>
-            {accuracy.extra_artists.map((artist, index) => (
+            {accuracy.extra.map((artist, index) => (
               <li key={index} style={styles.extraItem}>{artist}</li>
             ))}
           </ul>
