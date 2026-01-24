@@ -5,34 +5,35 @@
 See: .planning/PROJECT.md (updated 2026-01-22)
 
 **Core value:** Accurately measure which combination of system prompt + Claude model produces the most correct festival lineup extractions.
-**Current focus:** Phase 2 - Test Management & Configuration
+**Current focus:** Phase 3 - Execution & Evaluation
 
 ## Current Position
 
-Phase: 2 of 4 (Test Management & Configuration)
-Plan: 5 of 6 in current phase
+Phase: 3 of 4 (Execution & Evaluation)
+Plan: 1 of 4 complete
 Status: In progress
-Last activity: 2026-01-23 — Completed 02-04-PLAN.md (Test case detail & edit)
+Last activity: 2026-01-24 — Completed 03-01-PLAN.md (Backend Services)
 
-Progress: [███░░░░░░░] 40% (1/4 phases complete, Phase 2 in progress)
+Progress: [██████░░░░] 56% (9/16 plans complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
-- Average duration: 2.5min
-- Total execution time: 0.25 hours
+- Total plans completed: 9
+- Average duration: 2.4min
+- Total execution time: 0.36 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation & Data | 2/2 | 7min | 3.5min |
-| 2. Test Management & Configuration | 4/6 | 10min | 2.5min |
+| 2. Test Management & Configuration | 6/6 | 15min | 2.5min |
+| 3. Execution & Evaluation | 1/4 | 3min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (4min), 02-03 (2min), 02-05 (2min), 02-04 (2min)
-- Trend: Consistent velocity in Phase 2 (2.5min average)
+- Last 5 plans: 02-05 (2min), 02-04 (2min), 02-06 (5min), 03-01 (3min)
+- Trend: Starting Phase 3 execution
 
 *Updated after each plan completion*
 
@@ -86,6 +87,13 @@ Recent decisions affecting current work:
 - Lineup displayed as bulleted list per CONTEXT.md requirements
 - Delete flow only from detail page with confirmation dialog
 
+**From 03-01 (Backend services):**
+- Set operations for match/miss/extra breakdown (O(n) complexity)
+- Case-insensitive comparison via normalize (strip + lowercase)
+- Original casing preserved in result lists (matched_artists uses ground truth casing)
+- Multiple JSON parse strategies for Claude's varied response formats
+- 60-second default timeout for API calls (configurable)
+
 ### Pending Todos
 
 None yet.
@@ -105,11 +113,11 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-23
-Stopped at: Completed 02-04-PLAN.md (Test case detail & edit)
+Last session: 2026-01-24
+Stopped at: Completed 03-01-PLAN.md
 Resume file: None
-Next action: Continue with plan 02-06 in Phase 2 (Test Management & Configuration)
+Next action: Execute 03-02-PLAN.md (Execution API Endpoints)
 
 ---
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-23 after 02-04 completion*
+*Last updated: 2026-01-24 after 03-01 completion*
