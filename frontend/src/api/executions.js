@@ -1,4 +1,4 @@
-import { apiPost } from './client'
+import { apiPost, apiGet } from './client'
 
 /**
  * Execute a single test.
@@ -9,4 +9,33 @@ import { apiPost } from './client'
  */
 export async function executeTest(testId, mode, config) {
   return apiPost(`/executions/${testId}/${mode}`, config)
+}
+
+/**
+ * Start batch execution.
+ * @param {object} request - { test_ids, mode, system_prompt, model }
+ */
+export async function startBatch(request) {
+  return apiPost('/executions/batch', request)
+}
+
+/**
+ * Get batch progress.
+ */
+export async function getBatchProgress(batchId) {
+  return apiGet(`/executions/batch/${batchId}/progress`)
+}
+
+/**
+ * Cancel batch execution.
+ */
+export async function cancelBatch(batchId) {
+  return apiPost(`/executions/batch/${batchId}/cancel`)
+}
+
+/**
+ * Get batch results.
+ */
+export async function getBatchResults(batchId) {
+  return apiGet(`/executions/batch/${batchId}/results`)
 }
