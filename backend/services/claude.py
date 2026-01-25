@@ -100,6 +100,12 @@ async def extract_lineup_from_text(
                 model=model,
                 max_tokens=4096,
                 system=system_prompt,
+                tools=[
+                    {
+                        "type": "web_search_20250305",
+                        "name": "web_search"
+                    }
+                ],
                 messages=[
                     {
                         "role": "user",
@@ -185,6 +191,12 @@ async def extract_lineup_from_image(
                 model=model,
                 max_tokens=4096,
                 system=system_prompt,
+                tools=[
+                    {
+                        "type": "web_search_20250305",
+                        "name": "web_search"
+                    }
+                ],
                 messages=[
                     {
                         "role": "user",

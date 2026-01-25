@@ -10,7 +10,7 @@ from fastapi import FastAPI
 load_dotenv(Path(__file__).parent.parent / ".env")
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.api import test_cases, images, executions
+from backend.api import test_cases, images, executions, prompts
 from backend.storage import ensure_dirs
 
 
@@ -44,6 +44,7 @@ app.add_middleware(
 app.include_router(test_cases.router)
 app.include_router(images.router)
 app.include_router(executions.router)
+app.include_router(prompts.router)
 
 
 @app.get("/")

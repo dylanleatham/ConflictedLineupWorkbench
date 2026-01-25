@@ -3,7 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { getTestCase, deleteTestCase } from '../api/testCases'
 import { getImageUrl } from '../api/images'
 import { useExecution } from '../hooks/useExecution'
-import { useStickyState } from '../hooks/useStickyState'
+import { usePromptConfig } from '../hooks/usePromptConfig'
 import ExecutionResult from '../components/ExecutionResult'
 
 function TestCaseDetail() {
@@ -22,15 +22,8 @@ function TestCaseDetail() {
   // Execution state
   const { execute, isExecuting, result, error: execError, reset } = useExecution()
 
-  // Get prompt config from localStorage (same keys as PromptConfig)
-  const [systemPrompt] = useStickyState(
-    'Extract the festival lineup from this image. Return a JSON array of artist names.',
-    'festival-evaluator:system-prompt'
-  )
-  const [claudeModel] = useStickyState(
-    'claude-sonnet-4-20250514',
-    'festival-evaluator:claude-model'
-  )
+  // Get prompt config from backend
+  const { systemPrompt, claudeModel } = usePromptConfig()
 
   /**
    * Load test case data on mount.

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { getTestCases } from '../api/testCases'
 import TestCaseCard from '../components/TestCaseCard'
 import { useBatchExecution } from '../hooks/useBatchExecution'
-import { useStickyState } from '../hooks/useStickyState'
+import { usePromptConfig } from '../hooks/usePromptConfig'
 import BatchProgress from '../components/BatchProgress'
 import BatchResultsModal from '../components/BatchResultsModal'
 
@@ -15,14 +15,7 @@ function TestCaseList({ onBatchComplete }) {
   const navigate = useNavigate()
   const { start, cancel, reset, progress, results, isRunning, error: batchError } = useBatchExecution()
 
-  const [systemPrompt] = useStickyState(
-    'Extract the festival lineup from this image. Return a JSON array of artist names.',
-    'festival-evaluator:system-prompt'
-  )
-  const [claudeModel] = useStickyState(
-    'claude-sonnet-4-20250514',
-    'festival-evaluator:claude-model'
-  )
+  const { systemPrompt, claudeModel } = usePromptConfig()
 
   useEffect(() => {
     async function fetchTestCases() {
@@ -44,19 +37,15 @@ function TestCaseList({ onBatchComplete }) {
   // Auto-navigate to results page when batch completes
   useEffect(() => {
     if (results && !isRunning) {
-      // Get current config from localStorage
-      const model = localStorage.getItem('festival-evaluator:claude-model') || 'claude-sonnet-4-20250514'
-      const systemPrompt = localStorage.getItem('festival-evaluator:system-prompt') || ''
-
       // Call parent callback to store results
       if (onBatchComplete) {
-        onBatchComplete(results, { model, system_prompt: systemPrompt })
+        onBatchComplete(results, { model: claudeModel, system_prompt: systemPrompt })
       }
 
       // Navigate to results page
       navigate('/results')
     }
-  }, [results, isRunning, navigate, onBatchComplete])
+  }, [results, isRunning, navigate, onBatchComplete, claudeModel, systemPrompt])
 
   const handleRunAll = (mode) => {
     const testIds = testCases.map(tc => tc.id)

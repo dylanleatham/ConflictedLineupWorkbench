@@ -1,7 +1,28 @@
-"""Pydantic models for test cases."""
+"""Pydantic models for test cases and prompt configuration."""
 
 from pydantic import BaseModel, Field
 from typing import List, Optional
+
+
+class PromptConfig(BaseModel):
+    """Model for prompt configuration."""
+    system_prompt: str = Field(
+        default="Extract the festival lineup from this image. Return a JSON array of artist names.",
+        description="System prompt sent to Claude API"
+    )
+    claude_model: str = Field(
+        default="claude-sonnet-4-20250514",
+        description="Claude model identifier"
+    )
+
+    model_config = {
+        "json_schema_extra": {
+            "example": {
+                "system_prompt": "Extract the festival lineup from this image. Return a JSON array of artist names.",
+                "claude_model": "claude-sonnet-4-20250514"
+            }
+        }
+    }
 
 
 class TestCase(BaseModel):
