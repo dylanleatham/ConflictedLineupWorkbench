@@ -111,7 +111,7 @@ function TestCaseCreate() {
       createTest(name.trim(), year.trim(), artists)
 
       // Navigate to list
-      navigate('/web-search/test-cases')
+      navigate('/')
     } catch (err) {
       setError(err.message || 'Failed to create test case')
       setIsSubmitting(false)
@@ -207,7 +207,7 @@ function TestCaseCreate() {
           >
             {isSubmitting ? 'Creating...' : 'Create Test Case'}
           </button>
-          <Link to="/web-search/test-cases" style={styles.cancelLink}>
+          <Link to="/" style={styles.cancelLink}>
             Cancel
           </Link>
         </div>
