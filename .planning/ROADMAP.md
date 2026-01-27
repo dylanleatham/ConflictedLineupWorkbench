@@ -49,10 +49,10 @@ Plans:
   2. User can edit an existing web search test case
   3. User can delete a web search test case
   4. Web search test cases persist between browser sessions
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 06-01: TBD
+- [ ] 06-01-PLAN.md — Web search test case CRUD with localStorage persistence
 
 ### Phase 7: Execution and Results
 **Goal**: User can run web search tests and view results with metrics
@@ -79,7 +79,7 @@ Phases execute in numeric order: 5 -> 6 -> 7
 |-------|-----------|----------------|--------|-----------|
 | 1-4 | v1.0 | - | Complete | 2026-01-24 |
 | 5. UI Foundation | v1.1 | 1/1 | Complete | 2026-01-26 |
-| 6. Test Management | v1.1 | 0/TBD | Not started | - |
+| 6. Test Management | v1.1 | 0/1 | Not started | - |
 | 7. Execution and Results | v1.1 | 0/TBD | Not started | - |
 
 ---
