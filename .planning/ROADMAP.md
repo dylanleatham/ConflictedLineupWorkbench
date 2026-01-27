@@ -35,10 +35,10 @@ v1.0 delivered image-based lineup extraction eval with test case management, bat
   2. User can configure a system prompt specific to web search eval
   3. User can select a model for web search eval independently from image eval
   4. Web search prompt and model selection persist across page refreshes
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 05-01: TBD
+- [ ] 05-01-PLAN.md — Tabbed workspace UI with independent prompt config per workspace
 
 ### Phase 6: Test Management
 **Goal**: User can create, edit, and delete web search test cases that persist
@@ -78,7 +78,7 @@ Phases execute in numeric order: 5 -> 6 -> 7
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 1-4 | v1.0 | - | Complete | 2026-01-24 |
-| 5. UI Foundation | v1.1 | 0/TBD | Not started | - |
+| 5. UI Foundation | v1.1 | 0/1 | Planned | - |
 | 6. Test Management | v1.1 | 0/TBD | Not started | - |
 | 7. Execution and Results | v1.1 | 0/TBD | Not started | - |
 
