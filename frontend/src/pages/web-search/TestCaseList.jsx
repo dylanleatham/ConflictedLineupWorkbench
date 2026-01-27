@@ -1,8 +1,29 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useWebSearchTests } from '../../hooks/useWebSearchTests'
+import { useWebSearchExecution } from '../../hooks/useWebSearchExecution'
+import { useWebSearchBatch } from '../../hooks/useWebSearchBatch'
+import { useStickyState } from '../../hooks/useStickyState'
+import WebSearchBatchProgress from '../../components/WebSearchBatchProgress'
 
-function TestCaseList() {
+// Default config matching PromptConfig.jsx defaults for web-search-eval
+const DEFAULT_CONFIG = {
+  system_prompt: 'Search for the festival lineup and return the artist names as a JSON array.',
+  claude_model: 'claude-sonnet-4-20250514'
+}
+
+function TestCaseList({ onSingleResult, onBatchResults }) {
   const { tests, deleteTest } = useWebSearchTests()
+
+  // Read web search config from localStorage (synced with PromptConfig)
+  const [wsConfig] = useStickyState(DEFAULT_CONFIG, 'web-search-eval:prompt-config')
+
+  // Single test execution state
+  const { execute: executeSingle, isExecuting: isSingleExecuting } = useWebSearchExecution()
+  const [executingTestId, setExecutingTestId] = useState(null)
+
+  // Batch execution state
+  const { start: startBatch, cancel: cancelBatch, progress, results: batchResults, isRunning: isBatchRunning, error: batchError } = useWebSearchBatch()
 
   const handleDelete = (id, name) => {
     if (window.confirm(`Are you sure you want to delete "${name}"?`)) {
@@ -10,17 +31,73 @@ function TestCaseList() {
     }
   }
 
+  const handleRunSingle = async (test) => {
+    setExecutingTestId(test.id)
+    try {
+      const result = await executeSingle(test.id, test, wsConfig)
+      if (onSingleResult) {
+        onSingleResult(test.id, result)
+      }
+    } catch (err) {
+      // Error is already captured in the hook
+      console.error('Single test execution failed:', err)
+    } finally {
+      setExecutingTestId(null)
+    }
+  }
+
+  const handleRunAll = () => {
+    startBatch(tests, wsConfig)
+  }
+
+  const handleCancel = () => {
+    cancelBatch()
+  }
+
+  // Notify parent when batch completes
+  if (batchResults && onBatchResults) {
+    onBatchResults(batchResults)
+  }
+
   // Sort tests by year descending (most recent first)
   const sortedTests = [...tests].sort((a, b) => parseInt(b.year) - parseInt(a.year))
+
+  // Determine if any execution is in progress
+  const anyExecutionRunning = isBatchRunning || executingTestId !== null
 
   return (
     <div style={styles.container}>
       <div style={styles.header}>
         <h1>Test Cases</h1>
-        <Link to="/web-search/test-cases/new" style={styles.addButton}>
-          Add Test Case
-        </Link>
+        <div style={styles.headerButtons}>
+          {sortedTests.length > 0 && (
+            <button
+              onClick={handleRunAll}
+              disabled={anyExecutionRunning}
+              style={{
+                ...styles.runAllButton,
+                opacity: anyExecutionRunning ? 0.6 : 1,
+                cursor: anyExecutionRunning ? 'not-allowed' : 'pointer'
+              }}
+            >
+              {isBatchRunning ? 'Running...' : 'Run All'}
+            </button>
+          )}
+          <Link to="/web-search/test-cases/new" style={styles.addButton}>
+            Add Test Case
+          </Link>
+        </div>
       </div>
+
+      {batchError && (
+        <div style={styles.errorBanner}>
+          Error: {batchError}
+        </div>
+      )}
+
+      {isBatchRunning && (
+        <WebSearchBatchProgress progress={progress} onCancel={handleCancel} />
+      )}
 
       {sortedTests.length === 0 ? (
         <div style={styles.emptyState}>
@@ -41,26 +118,42 @@ function TestCaseList() {
             </tr>
           </thead>
           <tbody>
-            {sortedTests.map((test) => (
-              <tr key={test.id} style={styles.tr}>
-                <td style={styles.td}>{test.name}</td>
-                <td style={styles.td}>{test.year}</td>
-                <td style={styles.td}>{test.lineup.length}</td>
-                <td style={styles.td}>
-                  <div style={styles.actions}>
-                    <Link to={`/web-search/test-cases/${test.id}/edit`} style={styles.editLink}>
-                      Edit
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(test.id, test.name)}
-                      style={styles.deleteButton}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {sortedTests.map((test) => {
+              const isThisTestExecuting = executingTestId === test.id
+              const isDisabled = isBatchRunning || (isSingleExecuting && !isThisTestExecuting)
+
+              return (
+                <tr key={test.id} style={styles.tr}>
+                  <td style={styles.td}>{test.name}</td>
+                  <td style={styles.td}>{test.year}</td>
+                  <td style={styles.td}>{test.lineup.length}</td>
+                  <td style={styles.td}>
+                    <div style={styles.actions}>
+                      <button
+                        onClick={() => handleRunSingle(test)}
+                        disabled={isDisabled || isThisTestExecuting}
+                        style={{
+                          ...styles.runButton,
+                          opacity: (isDisabled || isThisTestExecuting) ? 0.6 : 1,
+                          cursor: (isDisabled || isThisTestExecuting) ? 'not-allowed' : 'pointer'
+                        }}
+                      >
+                        {isThisTestExecuting ? 'Running...' : 'Run'}
+                      </button>
+                      <Link to={`/web-search/test-cases/${test.id}/edit`} style={styles.editLink}>
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(test.id, test.name)}
+                        style={styles.deleteButton}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       )}
@@ -80,6 +173,20 @@ const styles = {
     alignItems: 'center',
     marginBottom: '30px',
   },
+  headerButtons: {
+    display: 'flex',
+    gap: '10px',
+    alignItems: 'center',
+  },
+  runAllButton: {
+    padding: '10px 20px',
+    backgroundColor: '#28a745',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    fontSize: '14px',
+    fontWeight: '500',
+  },
   addButton: {
     padding: '10px 20px',
     backgroundColor: '#007bff',
@@ -88,6 +195,13 @@ const styles = {
     borderRadius: '4px',
     fontSize: '14px',
     fontWeight: '500',
+  },
+  errorBanner: {
+    padding: '12px 16px',
+    backgroundColor: '#f8d7da',
+    color: '#721c24',
+    borderRadius: '4px',
+    marginBottom: '20px',
   },
   emptyState: {
     textAlign: 'center',
@@ -129,6 +243,14 @@ const styles = {
     display: 'flex',
     gap: '10px',
     alignItems: 'center',
+  },
+  runButton: {
+    padding: '4px 12px',
+    backgroundColor: '#28a745',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    fontSize: '14px',
   },
   editLink: {
     color: '#007bff',
