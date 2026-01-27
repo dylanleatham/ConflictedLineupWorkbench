@@ -16,7 +16,7 @@ Requirements for Web Search Eval milestone. Each maps to roadmap phases.
 
 ### Execution
 
-- [ ] **WSEXEC-01**: User can execute single web search test (festival name + year → Claude web search → extracted lineup)
+- [ ] **WSEXEC-01**: User can execute single web search test (festival name + year -> Claude web search -> extracted lineup)
 - [ ] **WSEXEC-02**: User can batch execute all web search tests with progress tracking
 - [ ] **WSEXEC-03**: User can cancel batch execution
 
@@ -60,26 +60,26 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| WSTEST-01 | — | Pending |
-| WSTEST-02 | — | Pending |
-| WSTEST-03 | — | Pending |
-| WSTEST-04 | — | Pending |
-| WSEXEC-01 | — | Pending |
-| WSEXEC-02 | — | Pending |
-| WSEXEC-03 | — | Pending |
-| WSRES-01 | — | Pending |
-| WSRES-02 | — | Pending |
-| WSRES-03 | — | Pending |
-| WSUI-01 | — | Pending |
-| WSUI-02 | — | Pending |
-| WSUI-03 | — | Pending |
-| WSUI-04 | — | Pending |
+| WSUI-01 | Phase 5 | Pending |
+| WSUI-02 | Phase 5 | Pending |
+| WSUI-03 | Phase 5 | Pending |
+| WSUI-04 | Phase 5 | Pending |
+| WSTEST-01 | Phase 6 | Pending |
+| WSTEST-02 | Phase 6 | Pending |
+| WSTEST-03 | Phase 6 | Pending |
+| WSTEST-04 | Phase 6 | Pending |
+| WSEXEC-01 | Phase 7 | Pending |
+| WSEXEC-02 | Phase 7 | Pending |
+| WSEXEC-03 | Phase 7 | Pending |
+| WSRES-01 | Phase 7 | Pending |
+| WSRES-02 | Phase 7 | Pending |
+| WSRES-03 | Phase 7 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 14 total
-- Mapped to phases: 0
-- Unmapped: 14
+- Mapped to phases: 14
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-01-26*
-*Last updated: 2026-01-26 after initial definition*
+*Last updated: 2026-01-26 after roadmap creation*
