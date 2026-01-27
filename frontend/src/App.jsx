@@ -8,6 +8,9 @@ import TestCaseCreate from './pages/TestCaseCreate'
 import TestCaseDetail from './pages/TestCaseDetail'
 import TestCaseEdit from './pages/TestCaseEdit'
 import ResultsPage from './pages/ResultsPage'
+import WebSearchTestList from './pages/web-search/TestCaseList'
+import WebSearchTestCreate from './pages/web-search/TestCaseCreate'
+import WebSearchTestEdit from './pages/web-search/TestCaseEdit'
 import './App.css'
 
 function App() {
@@ -65,10 +68,11 @@ function App() {
             </div>
           ) : (
             <div id="panel-web-search" role="tabpanel" aria-labelledby="tab-web-search">
-              <div style={{ padding: '2rem' }}>
-                <h1>Web Search Eval</h1>
-                <p style={{ color: '#666' }}>Coming in Phase 6</p>
-              </div>
+              <Routes>
+                <Route path="/" element={<WebSearchTestList />} />
+                <Route path="/web-search/test-cases/new" element={<WebSearchTestCreate />} />
+                <Route path="/web-search/test-cases/:id/edit" element={<WebSearchTestEdit />} />
+              </Routes>
             </div>
           )}
         </main>
