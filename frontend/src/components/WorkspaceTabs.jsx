@@ -1,3 +1,5 @@
+import './WorkspaceTabs.css'
+
 /**
  * WorkspaceTabs Component
  *

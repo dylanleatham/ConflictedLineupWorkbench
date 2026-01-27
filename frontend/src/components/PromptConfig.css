@@ -1,9 +1,5 @@
 .prompt-config {
-  width: 320px;
-  padding: 1.5rem;
-  background: #f8f9fa;
-  border-right: 1px solid #dee2e6;
-  overflow-y: auto;
+  /* Styling now provided by parent .sidebar class in App.css */
 }
 
 .prompt-config h2 {

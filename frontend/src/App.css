@@ -9,6 +9,14 @@
   height: 100vh;
 }
 
+.sidebar {
+  width: 320px;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-right: 1px solid #dee2e6;
+  overflow-y: auto;
+}
+
 .main-content {
   flex: 1;
   overflow-y: auto;
