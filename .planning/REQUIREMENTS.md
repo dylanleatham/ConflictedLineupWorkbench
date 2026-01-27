@@ -60,10 +60,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| WSUI-01 | Phase 5 | Pending |
-| WSUI-02 | Phase 5 | Pending |
-| WSUI-03 | Phase 5 | Pending |
-| WSUI-04 | Phase 5 | Pending |
+| WSUI-01 | Phase 5 | Complete |
+| WSUI-02 | Phase 5 | Complete |
+| WSUI-03 | Phase 5 | Complete |
+| WSUI-04 | Phase 5 | Complete |
 | WSTEST-01 | Phase 6 | Pending |
 | WSTEST-02 | Phase 6 | Pending |
 | WSTEST-03 | Phase 6 | Pending |

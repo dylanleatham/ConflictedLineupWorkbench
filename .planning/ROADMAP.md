@@ -16,7 +16,7 @@ v1.1 adds web search evaluation alongside the existing image-based eval. Users g
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phases 1-4: v1.0 MVP** - Image eval workbench (shipped)
-- [ ] **Phase 5: UI Foundation** - Tab structure and independent web search config
+- [x] **Phase 5: UI Foundation** - Tab structure and independent web search config
 - [ ] **Phase 6: Test Management** - CRUD for web search test cases
 - [ ] **Phase 7: Execution and Results** - Run web search tests and display results
 
@@ -38,7 +38,7 @@ v1.0 delivered image-based lineup extraction eval with test case management, bat
 **Plans**: 1 plan
 
 Plans:
-- [ ] 05-01-PLAN.md — Tabbed workspace UI with independent prompt config per workspace
+- [x] 05-01-PLAN.md — Tabbed workspace UI with independent prompt config per workspace
 
 ### Phase 6: Test Management
 **Goal**: User can create, edit, and delete web search test cases that persist
@@ -78,7 +78,7 @@ Phases execute in numeric order: 5 -> 6 -> 7
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 1-4 | v1.0 | - | Complete | 2026-01-24 |
-| 5. UI Foundation | v1.1 | 0/1 | Planned | - |
+| 5. UI Foundation | v1.1 | 1/1 | Complete | 2026-01-26 |
 | 6. Test Management | v1.1 | 0/TBD | Not started | - |
 | 7. Execution and Results | v1.1 | 0/TBD | Not started | - |
 
