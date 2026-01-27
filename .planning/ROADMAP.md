@@ -66,10 +66,12 @@ Plans:
   4. User can view pass/fail status for each completed test
   5. User can see aggregate metrics (percentage match, perfect score count)
   6. User can export web search results as JSON
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 07-01: TBD
+- [ ] 07-01-PLAN.md — Backend API endpoints for web search execution
+- [ ] 07-02-PLAN.md — Frontend execution hooks and batch progress UI
+- [ ] 07-03-PLAN.md — Results display with metrics, inline diff, and JSON export
 
 ## Progress
 
@@ -81,7 +83,7 @@ Phases execute in numeric order: 5 -> 6 -> 7
 | 1-4 | v1.0 | - | Complete | 2026-01-24 |
 | 5. UI Foundation | v1.1 | 1/1 | Complete | 2026-01-26 |
 | 6. Test Management | v1.1 | 2/2 | Complete | 2026-01-26 |
-| 7. Execution and Results | v1.1 | 0/TBD | Not started | - |
+| 7. Execution and Results | v1.1 | 0/3 | Not started | - |
 
 ---
 *Roadmap created: 2026-01-26*
