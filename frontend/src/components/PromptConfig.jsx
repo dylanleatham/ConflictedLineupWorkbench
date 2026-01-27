@@ -1,12 +1,22 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { getPromptConfig, savePromptConfig } from '../api/prompts';
+import { useStickyState } from '../hooks/useStickyState';
 import './PromptConfig.css';
 
-const DEFAULT_SYSTEM_PROMPT = 'Extract the festival lineup from this image. Return a JSON array of artist names.';
-const DEFAULT_MODEL = 'claude-sonnet-4-20250514';
+// Workspace-specific defaults
+const DEFAULTS = {
+  'image-eval': {
+    prompt: 'Extract the festival lineup from this image. Return a JSON array of artist names.',
+    model: 'claude-sonnet-4-20250514'
+  },
+  'web-search-eval': {
+    prompt: 'Search for the festival lineup and return the artist names as a JSON array.',
+    model: 'claude-sonnet-4-20250514'
+  }
+};
 
-// Storage key for cross-component sync
+// Storage key for cross-component sync (image-eval only)
 const STORAGE_EVENT_KEY = 'festival-evaluator:prompt-config';
 
 /**
@@ -16,17 +26,30 @@ const STORAGE_EVENT_KEY = 'festival-evaluator:prompt-config';
  * - System prompt for Claude API
  * - Claude model selection
  *
- * Values persist to backend storage and sync across browser tabs/components.
+ * Image Eval: Values persist to backend storage and sync across browser tabs/components.
+ * Web Search Eval: Values persist to localStorage only (backend sync in Phase 6).
  */
-function PromptConfig() {
-  const [systemPrompt, setSystemPrompt] = useState(DEFAULT_SYSTEM_PROMPT);
-  const [claudeModel, setClaudeModel] = useState(DEFAULT_MODEL);
-  const [loading, setLoading] = useState(true);
+function PromptConfig({ workspace = 'image-eval' }) {
+  // Web Search Eval: Use localStorage only
+  const [webSearchConfig, setWebSearchConfig] = useStickyState(
+    {
+      system_prompt: DEFAULTS['web-search-eval'].prompt,
+      claude_model: DEFAULTS['web-search-eval'].model
+    },
+    'web-search-eval:prompt-config'
+  );
+
+  // Image Eval: Use backend sync (existing pattern)
+  const [systemPrompt, setSystemPrompt] = useState(DEFAULTS['image-eval'].prompt);
+  const [claudeModel, setClaudeModel] = useState(DEFAULTS['image-eval'].model);
+  const [loading, setLoading] = useState(workspace === 'image-eval');
   const [saving, setSaving] = useState(false);
   const saveTimeoutRef = useRef(null);
 
-  // Load config from backend on mount
+  // Load config from backend on mount (image-eval only)
   useEffect(() => {
+    if (workspace !== 'image-eval') return;
+
     let mounted = true;
 
     async function loadConfig() {
@@ -53,10 +76,12 @@ function PromptConfig() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [workspace]);
 
-  // Debounced save to backend
+  // Debounced save to backend (image-eval only)
   const saveToBackend = useCallback(async (prompt, model) => {
+    if (workspace !== 'image-eval') return;
+
     setSaving(true);
     try {
       const config = { system_prompt: prompt, claude_model: model };
@@ -72,7 +97,7 @@ function PromptConfig() {
     } finally {
       setSaving(false);
     }
-  }, []);
+  }, [workspace]);
 
   // Schedule save after user stops typing (500ms debounce)
   const scheduleSave = useCallback((prompt, model) => {
@@ -95,35 +120,59 @@ function PromptConfig() {
 
   const handlePromptChange = (e) => {
     const newPrompt = e.target.value;
-    setSystemPrompt(newPrompt);
-    scheduleSave(newPrompt, claudeModel);
+    if (workspace === 'web-search-eval') {
+      setWebSearchConfig({ ...webSearchConfig, system_prompt: newPrompt });
+    } else {
+      setSystemPrompt(newPrompt);
+      scheduleSave(newPrompt, claudeModel);
+    }
   };
 
   const handleModelChange = (e) => {
     const newModel = e.target.value;
-    setClaudeModel(newModel);
-    // Model changes save immediately (no debounce needed for dropdowns)
-    saveToBackend(systemPrompt, newModel);
+    if (workspace === 'web-search-eval') {
+      setWebSearchConfig({ ...webSearchConfig, claude_model: newModel });
+    } else {
+      setClaudeModel(newModel);
+      // Model changes save immediately (no debounce needed for dropdowns)
+      saveToBackend(systemPrompt, newModel);
+    }
   };
+
+  // Get current values based on workspace
+  const currentPrompt = workspace === 'web-search-eval'
+    ? webSearchConfig.system_prompt
+    : systemPrompt;
+  const currentModel = workspace === 'web-search-eval'
+    ? webSearchConfig.claude_model
+    : claudeModel;
 
   if (loading) {
     return (
-      <aside className="prompt-config">
+      <div className="prompt-config">
         <nav style={styles.nav}>
-          <Link to="/" style={styles.navLink}>Test Cases</Link>
-          <Link to="/results" style={styles.navLink}>Results</Link>
+          {workspace === 'image-eval' && (
+            <>
+              <Link to="/" style={styles.navLink}>Test Cases</Link>
+              <Link to="/results" style={styles.navLink}>Results</Link>
+            </>
+          )}
         </nav>
         <h2>Prompt Configuration</h2>
         <p>Loading...</p>
-      </aside>
+      </div>
     );
   }
 
   return (
-    <aside className="prompt-config">
+    <div className="prompt-config">
       <nav style={styles.nav}>
-        <Link to="/" style={styles.navLink}>Test Cases</Link>
-        <Link to="/results" style={styles.navLink}>Results</Link>
+        {workspace === 'image-eval' && (
+          <>
+            <Link to="/" style={styles.navLink}>Test Cases</Link>
+            <Link to="/results" style={styles.navLink}>Results</Link>
+          </>
+        )}
       </nav>
 
       <h2>
@@ -135,7 +184,7 @@ function PromptConfig() {
         <label htmlFor="system-prompt">System Prompt</label>
         <textarea
           id="system-prompt"
-          value={systemPrompt}
+          value={currentPrompt}
           onChange={handlePromptChange}
           rows={10}
           placeholder="Enter your system prompt..."
@@ -147,7 +196,7 @@ function PromptConfig() {
         <label htmlFor="claude-model">Claude Model</label>
         <select
           id="claude-model"
-          value={claudeModel}
+          value={currentModel}
           onChange={handleModelChange}
           className="model-select"
         >
@@ -157,7 +206,7 @@ function PromptConfig() {
           <option value="claude-3-7-sonnet-20250219">Claude 3.7 Sonnet</option>
         </select>
       </div>
-    </aside>
+    </div>
   );
 }
 
