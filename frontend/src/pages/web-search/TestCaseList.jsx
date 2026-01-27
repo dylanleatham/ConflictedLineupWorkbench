@@ -5,6 +5,8 @@ import { useWebSearchExecution } from '../../hooks/useWebSearchExecution'
 import { useWebSearchBatch } from '../../hooks/useWebSearchBatch'
 import { useStickyState } from '../../hooks/useStickyState'
 import WebSearchBatchProgress from '../../components/WebSearchBatchProgress'
+import WebSearchResultsTable from '../../components/WebSearchResultsTable'
+import { exportWebSearchResults } from '../../utils/webSearchExport'
 
 // Default config matching PromptConfig.jsx defaults for web-search-eval
 const DEFAULT_CONFIG = {
@@ -57,6 +59,15 @@ function TestCaseList({ onSingleResult, onBatchResults }) {
   // Notify parent when batch completes
   if (batchResults && onBatchResults) {
     onBatchResults(batchResults)
+  }
+
+  // Handle export
+  const handleExport = () => {
+    if (!batchResults) return
+    exportWebSearchResults(batchResults, {
+      system_prompt: wsConfig.system_prompt,
+      model: wsConfig.claude_model
+    })
   }
 
   // Sort tests by year descending (most recent first)
@@ -156,6 +167,15 @@ function TestCaseList({ onSingleResult, onBatchResults }) {
             })}
           </tbody>
         </table>
+      )}
+
+      {/* Results table when batch complete */}
+      {batchResults && (
+        <WebSearchResultsTable
+          results={batchResults}
+          tests={tests}
+          onExport={handleExport}
+        />
       )}
     </div>
   )
