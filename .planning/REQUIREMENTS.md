@@ -9,10 +9,10 @@ Requirements for Web Search Eval milestone. Each maps to roadmap phases.
 
 ### Test Management
 
-- [ ] **WSTEST-01**: User can create web search test case with festival name, year, and ground truth lineup
-- [ ] **WSTEST-02**: User can edit web search test case
-- [ ] **WSTEST-03**: User can delete web search test case
-- [ ] **WSTEST-04**: Web search test cases persist between sessions
+- [x] **WSTEST-01**: User can create web search test case with festival name, year, and ground truth lineup
+- [x] **WSTEST-02**: User can edit web search test case
+- [x] **WSTEST-03**: User can delete web search test case
+- [x] **WSTEST-04**: Web search test cases persist between sessions
 
 ### Execution
 
@@ -64,10 +64,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | WSUI-02 | Phase 5 | Complete |
 | WSUI-03 | Phase 5 | Complete |
 | WSUI-04 | Phase 5 | Complete |
-| WSTEST-01 | Phase 6 | Pending |
-| WSTEST-02 | Phase 6 | Pending |
-| WSTEST-03 | Phase 6 | Pending |
-| WSTEST-04 | Phase 6 | Pending |
+| WSTEST-01 | Phase 6 | Complete |
+| WSTEST-02 | Phase 6 | Complete |
+| WSTEST-03 | Phase 6 | Complete |
+| WSTEST-04 | Phase 6 | Complete |
 | WSEXEC-01 | Phase 7 | Pending |
 | WSEXEC-02 | Phase 7 | Pending |
 | WSEXEC-03 | Phase 7 | Pending |
