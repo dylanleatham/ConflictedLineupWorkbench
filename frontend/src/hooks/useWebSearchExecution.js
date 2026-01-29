@@ -30,8 +30,8 @@ export function useWebSearchExecution() {
         festival_name: testData.name,
         year: testData.year,
         ground_truth_lineup: testData.lineup,
-        system_prompt: config.system_prompt,
-        model: config.claude_model
+        system_prompt: config.system_prompt || 'Search for the festival lineup and return the artist names as a JSON array.',
+        model: config.claude_model || 'claude-sonnet-4-20250514'
       })
       setResult(data)
       return data

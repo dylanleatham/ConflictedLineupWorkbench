@@ -104,69 +104,9 @@ class WebSearchBatchState:
 web_search_batch_states: Dict[str, WebSearchBatchState] = {}
 
 
-@router.post("/{test_id}", response_model=WebSearchExecutionResult)
-async def execute_web_search_test(
-    test_id: str,
-    request: WebSearchExecutionRequest
-) -> WebSearchExecutionResult:
-    """
-    Execute a single web search test case against Claude.
-
-    Args:
-        test_id: Test case ID
-        request: Execution request with festival data, system prompt, and model
-
-    Returns:
-        WebSearchExecutionResult with accuracy breakdown
-
-    Raises:
-        HTTPException: 504 if Claude API times out
-        HTTPException: 500 for other errors
-    """
-    # Build metadata
-    metadata = {
-        "model": request.model,
-        "system_prompt": request.system_prompt,
-        "timestamp": datetime.utcnow().isoformat(),
-        "festival_name": request.festival_name,
-        "year": request.year
-    }
-
-    try:
-        # Build query string for web search
-        query = f"{request.festival_name} {request.year}"
-
-        # Call Claude with web search enabled
-        extracted_lineup = await extract_lineup_from_text(
-            festival_name=query,
-            system_prompt=request.system_prompt,
-            model=request.model
-        )
-
-        # Calculate accuracy
-        accuracy_dict = calculate_accuracy(extracted_lineup, request.ground_truth_lineup)
-        accuracy_result = AccuracyResult(**accuracy_dict)
-
-        return WebSearchExecutionResult(
-            test_id=test_id,
-            status="success",
-            extracted_lineup=extracted_lineup,
-            accuracy=accuracy_result,
-            error=None,
-            metadata=metadata
-        )
-
-    except asyncio.TimeoutError as e:
-        raise HTTPException(
-            status_code=status.HTTP_504_GATEWAY_TIMEOUT,
-            detail=str(e)
-        )
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Execution failed: {str(e)}"
-        )
-
+# =============================================================================
+# BATCH ROUTES - Must be defined BEFORE /{test_id} to avoid route conflicts
+# =============================================================================
 
 async def run_web_search_batch_execution(
     batch_id: str,
@@ -392,3 +332,71 @@ async def get_web_search_batch_results(batch_id: str) -> WebSearchBatchSummary:
         average_accuracy=round(average_accuracy, 2),
         results=state.results
     )
+
+
+# =============================================================================
+# SINGLE TEST ROUTE - Must be AFTER batch routes due to /{test_id} pattern
+# =============================================================================
+
+@router.post("/{test_id}", response_model=WebSearchExecutionResult)
+async def execute_web_search_test(
+    test_id: str,
+    request: WebSearchExecutionRequest
+) -> WebSearchExecutionResult:
+    """
+    Execute a single web search test case against Claude.
+
+    Args:
+        test_id: Test case ID
+        request: Execution request with festival data, system prompt, and model
+
+    Returns:
+        WebSearchExecutionResult with accuracy breakdown
+
+    Raises:
+        HTTPException: 504 if Claude API times out
+        HTTPException: 500 for other errors
+    """
+    # Build metadata
+    metadata = {
+        "model": request.model,
+        "system_prompt": request.system_prompt,
+        "timestamp": datetime.utcnow().isoformat(),
+        "festival_name": request.festival_name,
+        "year": request.year
+    }
+
+    try:
+        # Build query string for web search
+        query = f"{request.festival_name} {request.year}"
+
+        # Call Claude with web search enabled
+        extracted_lineup = await extract_lineup_from_text(
+            festival_name=query,
+            system_prompt=request.system_prompt,
+            model=request.model
+        )
+
+        # Calculate accuracy
+        accuracy_dict = calculate_accuracy(extracted_lineup, request.ground_truth_lineup)
+        accuracy_result = AccuracyResult(**accuracy_dict)
+
+        return WebSearchExecutionResult(
+            test_id=test_id,
+            status="success",
+            extracted_lineup=extracted_lineup,
+            accuracy=accuracy_result,
+            error=None,
+            metadata=metadata
+        )
+
+    except asyncio.TimeoutError as e:
+        raise HTTPException(
+            status_code=status.HTTP_504_GATEWAY_TIMEOUT,
+            detail=str(e)
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Execution failed: {str(e)}"
+        )

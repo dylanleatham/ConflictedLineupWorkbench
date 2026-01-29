@@ -30,6 +30,9 @@ function App() {
     setBatchConfig(config)
   }, [])
 
+  // Determine which panel to show based on workspace
+  const isImageEval = activeWorkspace === 'image-eval'
+
   return (
     <BrowserRouter>
       <div className="app-layout">
@@ -41,40 +44,38 @@ function App() {
           <PromptConfig workspace={activeWorkspace} />
         </aside>
         <main className="main-content">
-          {activeWorkspace === 'image-eval' ? (
-            <div id="panel-image" role="tabpanel" aria-labelledby="tab-image">
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    <TestCaseList
-                      onBatchComplete={handleBatchComplete}
-                    />
-                  }
+          <Routes>
+            {/* Image Eval routes */}
+            <Route
+              path="/"
+              element={
+                isImageEval ? (
+                  <div id="panel-image" role="tabpanel" aria-labelledby="tab-image">
+                    <TestCaseList onBatchComplete={handleBatchComplete} />
+                  </div>
+                ) : (
+                  <div id="panel-web-search" role="tabpanel" aria-labelledby="tab-web-search">
+                    <WebSearchTestList />
+                  </div>
+                )
+              }
+            />
+            <Route path="/test-cases/new" element={<TestCaseCreate />} />
+            <Route path="/test-cases/:id" element={<TestCaseDetail />} />
+            <Route path="/test-cases/:id/edit" element={<TestCaseEdit />} />
+            <Route
+              path="/results"
+              element={
+                <ResultsPage
+                  batchResults={batchResults}
+                  config={batchConfig}
                 />
-                <Route path="/test-cases/new" element={<TestCaseCreate />} />
-                <Route path="/test-cases/:id" element={<TestCaseDetail />} />
-                <Route path="/test-cases/:id/edit" element={<TestCaseEdit />} />
-                <Route
-                  path="/results"
-                  element={
-                    <ResultsPage
-                      batchResults={batchResults}
-                      config={batchConfig}
-                    />
-                  }
-                />
-              </Routes>
-            </div>
-          ) : (
-            <div id="panel-web-search" role="tabpanel" aria-labelledby="tab-web-search">
-              <Routes>
-                <Route path="/" element={<WebSearchTestList />} />
-                <Route path="/web-search/test-cases/new" element={<WebSearchTestCreate />} />
-                <Route path="/web-search/test-cases/:id/edit" element={<WebSearchTestEdit />} />
-              </Routes>
-            </div>
-          )}
+              }
+            />
+            {/* Web Search Eval routes */}
+            <Route path="/web-search/test-cases/new" element={<WebSearchTestCreate />} />
+            <Route path="/web-search/test-cases/:id/edit" element={<WebSearchTestEdit />} />
+          </Routes>
         </main>
       </div>
     </BrowserRouter>

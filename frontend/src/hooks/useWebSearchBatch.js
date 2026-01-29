@@ -71,16 +71,18 @@ export function useWebSearchBatch() {
     setError(null)
 
     try {
-      const { batch_id } = await startWebSearchBatch({
+      const requestBody = {
         tests: tests.map(t => ({
           id: t.id,
           festival_name: t.name,
           year: t.year,
           ground_truth_lineup: t.lineup
         })),
-        system_prompt: config.system_prompt,
-        model: config.claude_model
-      })
+        system_prompt: config.system_prompt || 'Search for the festival lineup and return the artist names as a JSON array.',
+        model: config.claude_model || 'claude-sonnet-4-20250514'
+      }
+      console.log('Batch request body:', JSON.stringify(requestBody, null, 2))
+      const { batch_id } = await startWebSearchBatch(requestBody)
       setBatchId(batch_id)
     } catch (err) {
       setError(err.message)

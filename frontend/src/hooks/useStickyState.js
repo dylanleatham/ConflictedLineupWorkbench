@@ -1,6 +1,24 @@
 import { useState, useEffect, useRef } from 'react';
 
 /**
+ * Deep equality check for values (handles objects and primitives)
+ */
+function isEqual(a, b) {
+  if (a === b) return true;
+  if (typeof a !== typeof b) return false;
+  if (typeof a !== 'object' || a === null || b === null) return false;
+
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+  if (keysA.length !== keysB.length) return false;
+
+  for (const key of keysA) {
+    if (!keysB.includes(key) || !isEqual(a[key], b[key])) return false;
+  }
+  return true;
+}
+
+/**
  * Custom hook that persists state to localStorage and syncs across components.
  *
  * @param {*} defaultValue - Default value if nothing in localStorage
@@ -24,11 +42,17 @@ export function useStickyState(defaultValue, key) {
   const valueRef = useRef(value);
   valueRef.current = value;
 
+  // Track if we're the source of the change to avoid self-triggering
+  const isLocalUpdate = useRef(false);
+
   // Persist to localStorage when value changes
   useEffect(() => {
+    isLocalUpdate.current = true;
     localStorage.setItem(key, JSON.stringify(value));
     // Notify other components
     window.dispatchEvent(new CustomEvent('local-storage-change', { detail: { key } }));
+    // Reset flag after event loop
+    setTimeout(() => { isLocalUpdate.current = false; }, 0);
   }, [key, value]);
 
   // Listen for changes from other components or tabs
@@ -37,7 +61,7 @@ export function useStickyState(defaultValue, key) {
       if (e.key === key && e.newValue !== null) {
         try {
           const newValue = JSON.parse(e.newValue);
-          if (newValue !== valueRef.current) {
+          if (!isEqual(newValue, valueRef.current)) {
             setValue(newValue);
           }
         } catch {
@@ -47,13 +71,16 @@ export function useStickyState(defaultValue, key) {
     };
 
     const handleLocalChange = (e) => {
+      // Skip if we're the source of this change
+      if (isLocalUpdate.current) return;
+
       if (e.detail.key === key) {
         const saved = localStorage.getItem(key);
         if (saved !== null) {
           try {
             const newValue = JSON.parse(saved);
-            // Only update if value is actually different (prevents infinite loop)
-            if (newValue !== valueRef.current) {
+            // Only update if value is actually different (deep comparison)
+            if (!isEqual(newValue, valueRef.current)) {
               setValue(newValue);
             }
           } catch {

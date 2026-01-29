@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useWebSearchTests } from '../../hooks/useWebSearchTests'
 import { useWebSearchExecution } from '../../hooks/useWebSearchExecution'
@@ -27,6 +27,13 @@ function TestCaseList({ onSingleResult, onBatchResults }) {
   // Batch execution state
   const { start: startBatch, cancel: cancelBatch, progress, results: batchResults, isRunning: isBatchRunning, error: batchError } = useWebSearchBatch()
 
+  // Notify parent when batch completes (in useEffect to avoid render-time side effects)
+  useEffect(() => {
+    if (batchResults && onBatchResults) {
+      onBatchResults(batchResults)
+    }
+  }, [batchResults, onBatchResults])
+
   const handleDelete = (id, name) => {
     if (window.confirm(`Are you sure you want to delete "${name}"?`)) {
       deleteTest(id)
@@ -54,11 +61,6 @@ function TestCaseList({ onSingleResult, onBatchResults }) {
 
   const handleCancel = () => {
     cancelBatch()
-  }
-
-  // Notify parent when batch completes
-  if (batchResults && onBatchResults) {
-    onBatchResults(batchResults)
   }
 
   // Handle export
