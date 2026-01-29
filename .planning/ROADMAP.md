@@ -18,7 +18,7 @@ v1.1 adds web search evaluation alongside the existing image-based eval. Users g
 - [x] **Phases 1-4: v1.0 MVP** - Image eval workbench (shipped)
 - [x] **Phase 5: UI Foundation** - Tab structure and independent web search config
 - [x] **Phase 6: Test Management** - CRUD for web search test cases
-- [ ] **Phase 7: Execution and Results** - Run web search tests and display results
+- [x] **Phase 7: Execution and Results** - Run web search tests and display results
 
 ## Phase Details
 
@@ -69,9 +69,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — Backend API endpoints for web search execution
-- [ ] 07-02-PLAN.md — Frontend execution hooks and batch progress UI
-- [ ] 07-03-PLAN.md — Results display with metrics, inline diff, and JSON export
+- [x] 07-01-PLAN.md — Backend API endpoints for web search execution
+- [x] 07-02-PLAN.md — Frontend execution hooks and batch progress UI
+- [x] 07-03-PLAN.md — Results display with metrics, inline diff, and JSON export
 
 ## Progress
 
@@ -83,7 +83,7 @@ Phases execute in numeric order: 5 -> 6 -> 7
 | 1-4 | v1.0 | - | Complete | 2026-01-24 |
 | 5. UI Foundation | v1.1 | 1/1 | Complete | 2026-01-26 |
 | 6. Test Management | v1.1 | 2/2 | Complete | 2026-01-26 |
-| 7. Execution and Results | v1.1 | 0/3 | Not started | - |
+| 7. Execution and Results | v1.1 | 3/3 | Complete | 2026-01-28 |
 
 ---
 *Roadmap created: 2026-01-26*
