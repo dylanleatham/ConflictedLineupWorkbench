@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-01-26)
 
 **Core value:** Accurately measure which combination of system prompt + Claude model produces the most correct festival lineup extractions.
-**Current focus:** v1.1 Web Search Eval - Phase 7 Execution and Results
+**Current focus:** v1.1 Web Search Eval - Complete
 
 ## Current Position
 
 Phase: 7 of 7 (Execution and Results)
-Plan: 2 of 2 complete
+Plan: 3 of 3 complete
 Status: Phase complete
-Last activity: 2026-01-27 - Completed 07-02-PLAN.md
+Last activity: 2026-01-29 - Completed 07-03-PLAN.md
 
 Progress: [##########] 100% v1.0 | [##########] 100% v1.1
 
@@ -21,14 +21,14 @@ Progress: [##########] 100% v1.0 | [##########] 100% v1.1
 | Version | Name | Status | Shipped |
 |---------|------|--------|---------|
 | v1.0 | MVP | Complete | 2026-01-24 |
-| v1.1 | Web Search Eval | Complete | 2026-01-27 |
+| v1.1 | Web Search Eval | Complete | 2026-01-29 |
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5 (v1.1)
-- Average duration: 3.4min
-- Total execution time: 17min
+- Total plans completed: 6 (v1.1)
+- Average duration: 4.5min
+- Total execution time: 27min
 
 **By Phase:**
 
@@ -36,7 +36,7 @@ Progress: [##########] 100% v1.0 | [##########] 100% v1.1
 |-------|-------|-------|----------|
 | 5 | 1/1 | 3min | 3min |
 | 6 | 2/2 | 6min | 3min |
-| 7 | 2/2 | 8min | 4min |
+| 7 | 3/3 | 18min | 6min |
 
 *Updated after each plan completion*
 
@@ -59,6 +59,8 @@ Recent decisions affecting current work:
 - 07-01: No mode parameter for web search (always web search mode)
 - 07-02: Config read via useStickyState with same key as PromptConfig
 - 07-02: claude_model field name matches PromptConfig convention
+- 07-03: 100% match = pass, partial shows accuracy percentage
+- 07-03: Inline diff uses green=correct, red=missing, yellow=extra
 
 ### Pending Todos
 
@@ -70,11 +72,11 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-01-27
-Stopped at: Completed 07-02-PLAN.md - v1.1 complete
+Last session: 2026-01-29
+Stopped at: Completed 07-03-PLAN.md - v1.1 complete
 Resume file: None
 Next action: None - v1.1 milestone complete
 
 ---
 *State initialized: 2026-01-22*
-*Last updated: 2026-01-27 after 07-02 completion*
+*Last updated: 2026-01-29 after 07-03 completion*
