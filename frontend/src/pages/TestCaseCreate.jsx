@@ -218,7 +218,7 @@ function TestCaseCreate() {
           >
             {isSubmitting ? 'Creating...' : 'Create Test Case'}
           </button>
-          <Link to="/test-cases" style={styles.cancelLink}>
+          <Link to="/" style={styles.cancelLink}>
             Cancel
           </Link>
         </div>

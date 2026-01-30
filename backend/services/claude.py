@@ -72,7 +72,9 @@ async def extract_lineup_from_text(
     timeout: float = 60.0
 ) -> List[str]:
     """
-    Extract lineup from festival name using Claude's knowledge.
+    Extract lineup from festival name using Claude with web search.
+
+    Used by the Web Search Evals workspace.
 
     Args:
         festival_name: Name of the festival (e.g., "Coachella 2024")

@@ -16,17 +16,16 @@ export function useExecution() {
   /**
    * Execute a test.
    * @param {string} testId - Test case ID
-   * @param {string} mode - "text" or "image"
    * @param {object} config - { system_prompt, model }
    * @returns {Promise<object>} - Execution result
    */
-  const execute = async (testId, mode, config) => {
+  const execute = async (testId, config) => {
     setIsExecuting(true)
     setError(null)
     setResult(null)
 
     try {
-      const data = await executeTest(testId, mode, config)
+      const data = await executeTest(testId, config)
       setResult(data)
       return data
     } catch (err) {

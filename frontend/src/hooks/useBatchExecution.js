@@ -46,7 +46,7 @@ export function useBatchExecution() {
     }
   }, [batchId, results])
 
-  const start = useCallback(async (testIds, mode, config) => {
+  const start = useCallback(async (testIds, config) => {
     setIsRunning(true)
     setProgress(null)
     setResults(null)
@@ -55,7 +55,6 @@ export function useBatchExecution() {
     try {
       const { batch_id } = await startBatch({
         test_ids: testIds,
-        mode,
         ...config
       })
       setBatchId(batch_id)

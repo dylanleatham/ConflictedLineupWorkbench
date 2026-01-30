@@ -47,13 +47,13 @@ function ImageEvalTestCases({ onBatchComplete }) {
 
   const handleRunAll = () => {
     const testIds = testCases.map(tc => tc.id)
-    start(testIds, 'image', { system_prompt: systemPrompt, model: claudeModel })
+    start(testIds, { system_prompt: systemPrompt, model: claudeModel })
   }
 
   const handleRunSingle = async (testCase) => {
     setExecutingTestId(testCase.id)
     try {
-      await executeSingle(testCase.id, 'image', { system_prompt: systemPrompt, model: claudeModel })
+      await executeSingle(testCase.id, { system_prompt: systemPrompt, model: claudeModel })
     } catch (err) {
       console.error('Single test execution failed:', err)
     } finally {

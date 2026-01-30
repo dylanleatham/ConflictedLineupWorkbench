@@ -9,7 +9,7 @@ from typing import Dict, List, Optional
 from fastapi import APIRouter, BackgroundTasks, HTTPException, status
 from pydantic import BaseModel
 
-from backend.services import calculate_accuracy, extract_lineup_from_text, extract_lineup_from_image
+from backend.services import calculate_accuracy, extract_lineup_from_image
 from backend.storage import load_test_case, IMAGES_DIR
 
 router = APIRouter(prefix="/api/executions", tags=["executions"])
@@ -47,7 +47,6 @@ class ExecutionResult(BaseModel):
 class BatchRequest(BaseModel):
     """Request body for batch execution."""
     test_ids: List[str]
-    mode: str  # "text" or "image"
     system_prompt: str
     model: str
 
@@ -82,7 +81,6 @@ class BatchSummary(BaseModel):
 class BatchState:
     """Internal state for tracking batch execution."""
     total: int
-    mode: str
     system_prompt: str
     model: str
     completed: int = 0
@@ -95,14 +93,13 @@ class BatchState:
 batch_states: Dict[str, BatchState] = {}
 
 
-@router.post("/{test_id}/{mode}", response_model=ExecutionResult)
-async def execute_test(test_id: str, mode: str, request: ExecutionRequest) -> ExecutionResult:
+@router.post("/{test_id}", response_model=ExecutionResult)
+async def execute_test(test_id: str, request: ExecutionRequest) -> ExecutionResult:
     """
-    Execute a single test case against Claude.
+    Execute a single test case against Claude using image analysis.
 
     Args:
         test_id: Test case ID
-        mode: Execution mode ("text" or "image")
         request: Execution request with system prompt and model
 
     Returns:
@@ -110,17 +107,10 @@ async def execute_test(test_id: str, mode: str, request: ExecutionRequest) -> Ex
 
     Raises:
         HTTPException: 404 if test case not found
-        HTTPException: 400 if mode is invalid or image mode requested without image
+        HTTPException: 400 if test case has no image
         HTTPException: 504 if Claude API times out
         HTTPException: 500 for other errors
     """
-    # Validate mode
-    if mode not in ("text", "image"):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid mode '{mode}'. Must be 'text' or 'image'"
-        )
-
     # Load test case
     test_case = load_test_case(test_id)
     if not test_case:
@@ -129,37 +119,27 @@ async def execute_test(test_id: str, mode: str, request: ExecutionRequest) -> Ex
             detail=f"Test case '{test_id}' not found"
         )
 
-    # For image mode, validate image exists
-    if mode == "image":
-        if not test_case.image_hash:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Test case '{test_id}' has no image for image mode execution"
-            )
+    # Validate image exists
+    if not test_case.image_hash:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Test case '{test_id}' has no image"
+        )
 
     # Build metadata
     metadata = {
         "model": request.model,
         "system_prompt": request.system_prompt,
         "timestamp": datetime.utcnow().isoformat(),
-        "mode": mode
     }
 
     try:
-        # Execute based on mode
-        if mode == "text":
-            extracted_lineup = await extract_lineup_from_text(
-                festival_name=test_case.name,
-                system_prompt=request.system_prompt,
-                model=request.model
-            )
-        else:  # image mode
-            image_path = IMAGES_DIR / f"{test_case.image_hash}.jpg"
-            extracted_lineup = await extract_lineup_from_image(
-                image_path=image_path,
-                system_prompt=request.system_prompt,
-                model=request.model
-            )
+        image_path = IMAGES_DIR / f"{test_case.image_hash}.jpg"
+        extracted_lineup = await extract_lineup_from_image(
+            image_path=image_path,
+            system_prompt=request.system_prompt,
+            model=request.model
+        )
 
         # Calculate accuracy
         accuracy_dict = calculate_accuracy(extracted_lineup, test_case.lineup)
@@ -188,7 +168,7 @@ async def execute_test(test_id: str, mode: str, request: ExecutionRequest) -> Ex
 
 async def run_batch_execution(batch_id: str, test_ids: List[str]) -> None:
     """
-    Background task to execute batch tests.
+    Background task to execute batch tests using image analysis.
 
     Args:
         batch_id: Unique batch identifier
@@ -205,6 +185,13 @@ async def run_batch_execution(batch_id: str, test_ids: List[str]) -> None:
 
         state.current_test_id = test_id
 
+        # Build metadata
+        metadata = {
+            "model": state.model,
+            "system_prompt": state.system_prompt,
+            "timestamp": datetime.utcnow().isoformat(),
+        }
+
         # Load test case
         test_case = load_test_case(test_id)
         if not test_case:
@@ -213,57 +200,31 @@ async def run_batch_execution(batch_id: str, test_ids: List[str]) -> None:
                 test_id=test_id,
                 status="failed",
                 error=f"Test case '{test_id}' not found",
-                metadata={
-                    "model": state.model,
-                    "system_prompt": state.system_prompt,
-                    "timestamp": datetime.utcnow().isoformat(),
-                    "mode": state.mode
-                }
+                metadata=metadata
             ))
             state.failed += 1
             state.completed += 1
             continue
 
-        # Check for image mode without image
-        if state.mode == "image" and not test_case.image_hash:
+        # Check for missing image
+        if not test_case.image_hash:
             state.results.append(ExecutionResult(
                 test_id=test_id,
                 status="failed",
-                error=f"Test case '{test_id}' has no image for image mode",
-                metadata={
-                    "model": state.model,
-                    "system_prompt": state.system_prompt,
-                    "timestamp": datetime.utcnow().isoformat(),
-                    "mode": state.mode
-                }
+                error=f"Test case '{test_id}' has no image",
+                metadata=metadata
             ))
             state.failed += 1
             state.completed += 1
             continue
 
-        # Build metadata
-        metadata = {
-            "model": state.model,
-            "system_prompt": state.system_prompt,
-            "timestamp": datetime.utcnow().isoformat(),
-            "mode": state.mode
-        }
-
         try:
-            # Execute based on mode
-            if state.mode == "text":
-                extracted_lineup = await extract_lineup_from_text(
-                    festival_name=test_case.name,
-                    system_prompt=state.system_prompt,
-                    model=state.model
-                )
-            else:  # image mode
-                image_path = IMAGES_DIR / f"{test_case.image_hash}.jpg"
-                extracted_lineup = await extract_lineup_from_image(
-                    image_path=image_path,
-                    system_prompt=state.system_prompt,
-                    model=state.model
-                )
+            image_path = IMAGES_DIR / f"{test_case.image_hash}.jpg"
+            extracted_lineup = await extract_lineup_from_image(
+                image_path=image_path,
+                system_prompt=state.system_prompt,
+                model=state.model
+            )
 
             # Calculate accuracy
             accuracy_dict = calculate_accuracy(extracted_lineup, test_case.lineup)
@@ -300,7 +261,7 @@ async def start_batch_execution(
     background_tasks: BackgroundTasks
 ) -> BatchStartResponse:
     """
-    Start a batch execution of multiple test cases.
+    Start a batch execution of multiple test cases using image analysis.
 
     Runs in the background. Use progress and results endpoints to monitor.
 
@@ -312,15 +273,8 @@ async def start_batch_execution(
         BatchStartResponse with batch_id for tracking
 
     Raises:
-        HTTPException: 400 if mode is invalid or test_ids is empty
+        HTTPException: 400 if test_ids is empty
     """
-    # Validate mode
-    if request.mode not in ("text", "image"):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid mode '{request.mode}'. Must be 'text' or 'image'"
-        )
-
     # Validate test_ids
     if not request.test_ids:
         raise HTTPException(
@@ -334,7 +288,6 @@ async def start_batch_execution(
     # Initialize batch state
     batch_states[batch_id] = BatchState(
         total=len(request.test_ids),
-        mode=request.mode,
         system_prompt=request.system_prompt,
         model=request.model
     )

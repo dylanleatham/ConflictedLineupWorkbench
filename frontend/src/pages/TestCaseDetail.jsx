@@ -79,22 +79,11 @@ function TestCaseDetail() {
   }
 
   /**
-   * Run text-based test (uses festival name).
+   * Run image-based test.
    */
-  const handleRunText = async () => {
+  const handleRunTest = async () => {
     try {
-      await execute(id, 'text', { system_prompt: systemPrompt, model: claudeModel })
-    } catch {
-      // Error is handled by useExecution hook
-    }
-  }
-
-  /**
-   * Run image-based test (uses festival image).
-   */
-  const handleRunImage = async () => {
-    try {
-      await execute(id, 'image', { system_prompt: systemPrompt, model: claudeModel })
+      await execute(id, { system_prompt: systemPrompt, model: claudeModel })
     } catch {
       // Error is handled by useExecution hook
     }
@@ -166,21 +155,12 @@ function TestCaseDetail() {
         <h2 style={styles.sectionTitle}>Run Test</h2>
         <div style={styles.runButtons}>
           <button
-            onClick={handleRunText}
-            disabled={isExecuting}
+            onClick={handleRunTest}
+            disabled={isExecuting || !testCase.image_hash}
             style={styles.runButton}
           >
-            {isExecuting ? 'Running...' : 'Run Text Test'}
+            {isExecuting ? 'Running...' : 'Run Test'}
           </button>
-          {testCase.image_hash && (
-            <button
-              onClick={handleRunImage}
-              disabled={isExecuting}
-              style={styles.runButton}
-            >
-              {isExecuting ? 'Running...' : 'Run Image Test'}
-            </button>
-          )}
           {result && (
             <button
               onClick={handleClearResult}
@@ -190,6 +170,11 @@ function TestCaseDetail() {
             </button>
           )}
         </div>
+        {!testCase.image_hash && (
+          <p style={styles.warningText}>
+            This test case has no image. Add an image to run the test.
+          </p>
+        )}
         {isExecuting && (
           <p style={styles.executingText}>
             Executing test with {claudeModel}...
@@ -358,6 +343,14 @@ const styles = {
     marginTop: '15px',
     color: '#666',
     fontStyle: 'italic',
+  },
+  warningText: {
+    marginTop: '15px',
+    color: '#856404',
+    backgroundColor: '#fff3cd',
+    padding: '10px',
+    borderRadius: '4px',
+    border: '1px solid #ffeeba',
   },
   imageSection: {
     marginBottom: '30px',

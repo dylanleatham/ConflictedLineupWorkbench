@@ -3,17 +3,16 @@ import { apiPost, apiGet } from './client'
 /**
  * Execute a single test.
  * @param {string} testId - Test case ID
- * @param {string} mode - "text" or "image"
  * @param {object} config - { system_prompt, model }
  * @returns {Promise<object>} - Execution result with accuracy breakdown
  */
-export async function executeTest(testId, mode, config) {
-  return apiPost(`/executions/${testId}/${mode}`, config)
+export async function executeTest(testId, config) {
+  return apiPost(`/executions/${testId}`, config)
 }
 
 /**
  * Start batch execution.
- * @param {object} request - { test_ids, mode, system_prompt, model }
+ * @param {object} request - { test_ids, system_prompt, model }
  */
 export async function startBatch(request) {
   return apiPost('/executions/batch', request)
