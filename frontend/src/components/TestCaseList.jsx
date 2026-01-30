@@ -116,7 +116,7 @@ function TestCaseList({
                 variant={variant}
                 onRun={() => onRunSingle(testCase)}
                 onDelete={() => onDelete(testCase)}
-                detailPath={variant === 'image' ? `${basePath}/${testCase.id}` : `${basePath}/${testCase.id}/edit`}
+                detailPath={`${basePath}/${testCase.id}/edit`}
                 editPath={`${basePath}/${testCase.id}/edit`}
                 isRunning={isThisTestRunning}
                 isDisabled={isDisabled}

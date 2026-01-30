@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { getTestCase, updateTestCase } from '../api/testCases'
 import { uploadImage, getImageUrl } from '../api/images'
 import { ImagePreview } from '../components/ImagePreview'
+import { GroundTruthLineupField, parseLineup } from '../components/GroundTruthLineupField'
 
 function TestCaseEdit() {
   const { id } = useParams()
@@ -70,52 +71,6 @@ function TestCaseEdit() {
   const handleKeepImage = () => {
     setRemoveImage(false)
     setImageFile(null)
-  }
-
-  /**
-   * Import ground truth from a text file.
-   */
-  const handleImportFromFile = async () => {
-    const input = document.createElement('input')
-    input.type = 'file'
-    input.accept = '.txt'
-
-    input.onchange = async (e) => {
-      const file = e.target.files?.[0]
-      if (file) {
-        try {
-          const text = await file.text()
-          setLineup(text)
-        } catch (err) {
-          setError(`Failed to read file: ${err.message}`)
-        }
-      }
-    }
-
-    input.click()
-  }
-
-  /**
-   * Paste ground truth from clipboard.
-   */
-  const handlePasteFromClipboard = async () => {
-    try {
-      const text = await navigator.clipboard.readText()
-      setLineup(text)
-    } catch (err) {
-      setError(`Failed to read clipboard: ${err.message}`)
-    }
-  }
-
-  /**
-   * Parse lineup textarea into array of artist names.
-   * Splits by newlines, trims whitespace, filters empty lines.
-   */
-  const parseLineup = (text) => {
-    return text
-      .split('\n')
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0)
   }
 
   /**
@@ -282,40 +237,12 @@ function TestCaseEdit() {
         </div>
 
         {/* Ground Truth Lineup */}
-        <div style={styles.field}>
-          <label htmlFor="lineup" style={styles.label}>
-            Ground Truth Lineup * <span style={styles.hint}>(one artist per line)</span>
-          </label>
-          <textarea
-            id="lineup"
-            value={lineup}
-            onChange={(e) => setLineup(e.target.value)}
-            disabled={isSubmitting}
-            style={styles.textarea}
-            placeholder="Artist 1&#10;Artist 2&#10;Artist 3"
-            rows={10}
-          />
-        </div>
-
-        {/* Import Buttons */}
-        <div style={styles.importButtons}>
-          <button
-            type="button"
-            onClick={handleImportFromFile}
-            disabled={isSubmitting}
-            style={styles.importButton}
-          >
-            Import from File
-          </button>
-          <button
-            type="button"
-            onClick={handlePasteFromClipboard}
-            disabled={isSubmitting}
-            style={styles.importButton}
-          >
-            Paste from Clipboard
-          </button>
-        </div>
+        <GroundTruthLineupField
+          lineup={lineup}
+          onChange={setLineup}
+          onError={setError}
+          disabled={isSubmitting}
+        />
 
         {/* Submit */}
         <div style={styles.actions}>
@@ -361,11 +288,6 @@ const styles = {
     fontWeight: 'bold',
     fontSize: '14px',
   },
-  hint: {
-    fontWeight: 'normal',
-    color: '#666',
-    fontSize: '13px',
-  },
   input: {
     padding: '8px 12px',
     fontSize: '14px',
@@ -381,26 +303,6 @@ const styles = {
   imageActionButton: {
     padding: '6px 12px',
     fontSize: '13px',
-    backgroundColor: '#f5f5f5',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    cursor: 'pointer',
-  },
-  textarea: {
-    padding: '8px 12px',
-    fontSize: '14px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    fontFamily: 'monospace',
-    resize: 'vertical',
-  },
-  importButtons: {
-    display: 'flex',
-    gap: '10px',
-  },
-  importButton: {
-    padding: '8px 16px',
-    fontSize: '14px',
     backgroundColor: '#f5f5f5',
     border: '1px solid #ccc',
     borderRadius: '4px',
