@@ -91,7 +91,7 @@ function TestCaseEdit() {
       })
 
       // Navigate to list
-      navigate('/')
+      navigate('/web-search')
     } catch (err) {
       setError(err.message || 'Failed to update test case')
       setIsSubmitting(false)
@@ -114,7 +114,7 @@ function TestCaseEdit() {
         <div style={styles.error}>
           <strong>Error:</strong> Test case not found
         </div>
-        <Link to="/" style={styles.cancelLink}>
+        <Link to="/web-search" style={styles.cancelLink}>
           Back to Test Cases
         </Link>
       </div>
@@ -182,7 +182,7 @@ function TestCaseEdit() {
           >
             {isSubmitting ? 'Saving...' : 'Save Changes'}
           </button>
-          <Link to="/" style={styles.cancelLink}>
+          <Link to="/web-search" style={styles.cancelLink}>
             Cancel
           </Link>
         </div>

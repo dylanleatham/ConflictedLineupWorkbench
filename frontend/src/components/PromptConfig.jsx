@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Link } from 'react-router-dom';
 import { getPromptConfig, savePromptConfig } from '../api/prompts';
 import { useStickyState } from '../hooks/useStickyState';
 import './PromptConfig.css';
@@ -150,14 +149,6 @@ function PromptConfig({ workspace = 'image-eval' }) {
   if (loading) {
     return (
       <div className="prompt-config">
-        <nav style={styles.nav}>
-          {workspace === 'image-eval' && (
-            <>
-              <Link to="/" style={styles.navLink}>Test Cases</Link>
-              <Link to="/results" style={styles.navLink}>Results</Link>
-            </>
-          )}
-        </nav>
         <h2>Prompt Configuration</h2>
         <p>Loading...</p>
       </div>
@@ -166,15 +157,6 @@ function PromptConfig({ workspace = 'image-eval' }) {
 
   return (
     <div className="prompt-config">
-      <nav style={styles.nav}>
-        {workspace === 'image-eval' && (
-          <>
-            <Link to="/" style={styles.navLink}>Test Cases</Link>
-            <Link to="/results" style={styles.navLink}>Results</Link>
-          </>
-        )}
-      </nav>
-
       <h2>
         Prompt Configuration
         {saving && <span style={styles.savingIndicator}> (saving...)</span>}
@@ -211,17 +193,6 @@ function PromptConfig({ workspace = 'image-eval' }) {
 }
 
 const styles = {
-  nav: {
-    marginBottom: '20px',
-    paddingBottom: '15px',
-    borderBottom: '1px solid #ddd'
-  },
-  navLink: {
-    display: 'block',
-    padding: '8px 0',
-    color: '#007bff',
-    textDecoration: 'none'
-  },
   savingIndicator: {
     fontSize: '0.75em',
     color: '#666',

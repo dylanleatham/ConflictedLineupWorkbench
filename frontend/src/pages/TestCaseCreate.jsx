@@ -72,8 +72,8 @@ function TestCaseCreate() {
       // Create test case
       const testCase = await createTestCase(name.trim(), artists, imageHash)
 
-      // Navigate to detail page
-      navigate(`/test-cases/${testCase.id}`)
+      // Navigate to list
+      navigate('/')
     } catch (err) {
       setError(err.message || 'Failed to create test case')
       setIsSubmitting(false)

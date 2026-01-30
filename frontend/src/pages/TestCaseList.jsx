@@ -6,12 +6,15 @@ import { useExecution } from '../hooks/useExecution'
 import { usePromptConfig } from '../hooks/usePromptConfig'
 import TestCaseList from '../components/TestCaseList'
 import BatchProgress from '../components/BatchProgress'
+import ExecutionResult from '../components/ExecutionResult'
 
 function ImageEvalTestCases({ onBatchComplete }) {
   const [testCases, setTestCases] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [executingTestId, setExecutingTestId] = useState(null)
+  const [singleResult, setSingleResult] = useState(null)
+  const [singleResultTestName, setSingleResultTestName] = useState(null)
 
   const navigate = useNavigate()
   const { start, cancel, progress, results, isRunning, error: batchError } = useBatchExecution()
@@ -52,8 +55,11 @@ function ImageEvalTestCases({ onBatchComplete }) {
 
   const handleRunSingle = async (testCase) => {
     setExecutingTestId(testCase.id)
+    setSingleResult(null)
     try {
-      await executeSingle(testCase.id, { system_prompt: systemPrompt, model: claudeModel })
+      const result = await executeSingle(testCase.id, { system_prompt: systemPrompt, model: claudeModel })
+      setSingleResult(result)
+      setSingleResultTestName(testCase.name)
     } catch (err) {
       console.error('Single test execution failed:', err)
     } finally {
@@ -89,7 +95,16 @@ function ImageEvalTestCases({ onBatchComplete }) {
       batchError={batchError}
       onCancelBatch={cancel}
       ProgressComponent={BatchProgress}
-    />
+    >
+      {singleResult && (
+        <div style={{ marginTop: '30px' }}>
+          <h2 style={{ fontSize: '20px', marginBottom: '10px', color: '#333' }}>
+            Result: {singleResultTestName}
+          </h2>
+          <ExecutionResult result={singleResult} />
+        </div>
+      )}
+    </TestCaseList>
   )
 }
 

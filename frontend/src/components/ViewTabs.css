@@ -1,0 +1,40 @@
+/* View Tabs - Sub-navigation for Test Cases / Results */
+
+.view-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.view-tab {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: transparent;
+  color: #6c757d;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.view-tab:hover:not(.active) {
+  color: #495057;
+  background: #f8f9fa;
+}
+
+.view-tab.active {
+  color: #007bff;
+}
+
+.view-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #007bff;
+}

@@ -1,28 +1,50 @@
-import { useState, useCallback } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useState, useCallback, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, useNavigate, useLocation, Navigate, useParams } from 'react-router-dom'
 import { useStickyState } from './hooks/useStickyState'
 import WorkspaceTabs from './components/WorkspaceTabs'
+import ViewTabs from './components/ViewTabs'
 import PromptConfig from './components/PromptConfig'
 import TestCaseList from './pages/TestCaseList'
 import TestCaseCreate from './pages/TestCaseCreate'
-import TestCaseDetail from './pages/TestCaseDetail'
 import TestCaseEdit from './pages/TestCaseEdit'
 import ResultsPage from './pages/ResultsPage'
 import WebSearchTestList from './pages/web-search/TestCaseList'
 import WebSearchTestCreate from './pages/web-search/TestCaseCreate'
 import WebSearchTestEdit from './pages/web-search/TestCaseEdit'
+import WebSearchResultsPage from './pages/web-search/ResultsPage'
 import './App.css'
 
-function App() {
+// Redirect component for legacy detail view URLs
+function TestCaseRedirect() {
+  const { id } = useParams()
+  return <Navigate to={`/test-cases/${id}/edit`} replace />
+}
+
+function AppContent() {
+  const navigate = useNavigate()
+  const location = useLocation()
+
   // Workspace state - persists active tab selection
   const [activeWorkspace, setActiveWorkspace] = useStickyState(
     'image-eval',
     'active-workspace'
   )
 
-  // Batch results state - lifted to App level for cross-component access
+  // Sync workspace state based on URL when navigating directly
+  useEffect(() => {
+    const isWebSearchRoute = location.pathname.startsWith('/web-search')
+    const expectedWorkspace = isWebSearchRoute ? 'web-search-eval' : 'image-eval'
+    if (activeWorkspace !== expectedWorkspace) {
+      setActiveWorkspace(expectedWorkspace)
+    }
+  }, [location.pathname, activeWorkspace, setActiveWorkspace])
+
+  // Image Eval batch results state - lifted to App level for cross-component access
   const [batchResults, setBatchResults] = useState(null)
   const [batchConfig, setBatchConfig] = useState(null)
+
+  // Web Search Eval batch results state
+  const [webSearchResults, setWebSearchResults] = useState(null)
 
   // Memoize callback to prevent infinite re-render loop
   const handleBatchComplete = useCallback((results, config) => {
@@ -30,17 +52,31 @@ function App() {
     setBatchConfig(config)
   }, [])
 
-  // Determine which panel to show based on workspace
-  const isImageEval = activeWorkspace === 'image-eval'
+  const handleWebSearchBatchComplete = useCallback((results) => {
+    setWebSearchResults(results)
+  }, [])
+
+  // Handle workspace change - update state and navigate to list
+  const handleWorkspaceChange = useCallback((workspace) => {
+    setActiveWorkspace(workspace)
+    // Navigate to the appropriate list view
+    if (workspace === 'image-eval') {
+      navigate('/')
+    } else {
+      navigate('/web-search')
+    }
+  }, [setActiveWorkspace, navigate])
 
   return (
-    <BrowserRouter>
+    <div className="app-container">
+      <header className="app-ribbon">
+        <WorkspaceTabs
+          active={activeWorkspace}
+          onChange={handleWorkspaceChange}
+        />
+      </header>
       <div className="app-layout">
         <aside className="sidebar">
-          <WorkspaceTabs
-            active={activeWorkspace}
-            onChange={setActiveWorkspace}
-          />
           <PromptConfig workspace={activeWorkspace} />
         </aside>
         <main className="main-content">
@@ -49,33 +85,59 @@ function App() {
             <Route
               path="/"
               element={
-                <div key={activeWorkspace} className="workspace-panel" role="tabpanel">
-                  {isImageEval ? (
-                    <TestCaseList onBatchComplete={handleBatchComplete} />
-                  ) : (
-                    <WebSearchTestList />
-                  )}
+                <div className="workspace-panel" role="tabpanel">
+                  <ViewTabs basePath="" />
+                  <TestCaseList onBatchComplete={handleBatchComplete} />
+                </div>
+              }
+            />
+            <Route
+              path="/results"
+              element={
+                <div className="workspace-panel" role="tabpanel">
+                  <ViewTabs basePath="" />
+                  <ResultsPage
+                    batchResults={batchResults}
+                    config={batchConfig}
+                  />
                 </div>
               }
             />
             <Route path="/test-cases/new" element={<TestCaseCreate />} />
-            <Route path="/test-cases/:id" element={<TestCaseDetail />} />
+            <Route path="/test-cases/:id" element={<TestCaseRedirect />} />
             <Route path="/test-cases/:id/edit" element={<TestCaseEdit />} />
+            {/* Web Search Eval routes */}
             <Route
-              path="/results"
+              path="/web-search"
               element={
-                <ResultsPage
-                  batchResults={batchResults}
-                  config={batchConfig}
-                />
+                <div className="workspace-panel" role="tabpanel">
+                  <ViewTabs basePath="/web-search" />
+                  <WebSearchTestList onBatchComplete={handleWebSearchBatchComplete} />
+                </div>
               }
             />
-            {/* Web Search Eval routes */}
+            <Route
+              path="/web-search/results"
+              element={
+                <div className="workspace-panel" role="tabpanel">
+                  <ViewTabs basePath="/web-search" />
+                  <WebSearchResultsPage batchResults={webSearchResults} />
+                </div>
+              }
+            />
             <Route path="/web-search/test-cases/new" element={<WebSearchTestCreate />} />
             <Route path="/web-search/test-cases/:id/edit" element={<WebSearchTestEdit />} />
           </Routes>
         </main>
       </div>
+    </div>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   )
 }

@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useWebSearchTests } from '../../hooks/useWebSearchTests'
 import { useWebSearchExecution } from '../../hooks/useWebSearchExecution'
 import { useWebSearchBatch } from '../../hooks/useWebSearchBatch'
 import { useStickyState } from '../../hooks/useStickyState'
 import TestCaseList from '../../components/TestCaseList'
 import WebSearchBatchProgress from '../../components/WebSearchBatchProgress'
-import WebSearchResultsTable from '../../components/WebSearchResultsTable'
-import { exportWebSearchResults } from '../../utils/webSearchExport'
+import ExecutionResult from '../../components/ExecutionResult'
 
 // Default config matching PromptConfig.jsx defaults for web-search-eval
 const DEFAULT_CONFIG = {
@@ -14,23 +14,29 @@ const DEFAULT_CONFIG = {
   claude_model: 'claude-sonnet-4-20250514'
 }
 
-function WebSearchTestCases({ onSingleResult, onBatchResults }) {
+function WebSearchTestCases({ onBatchComplete }) {
+  const navigate = useNavigate()
   const { tests, deleteTest } = useWebSearchTests()
   const [wsConfig] = useStickyState(DEFAULT_CONFIG, 'web-search-eval:prompt-config')
 
   // Single test execution state
   const { execute: executeSingle, isExecuting: isSingleExecuting } = useWebSearchExecution()
   const [executingTestId, setExecutingTestId] = useState(null)
+  const [singleResult, setSingleResult] = useState(null)
+  const [singleResultTestName, setSingleResultTestName] = useState(null)
 
   // Batch execution state
   const { start: startBatch, cancel: cancelBatch, progress, results: batchResults, isRunning: isBatchRunning, error: batchError } = useWebSearchBatch()
 
-  // Notify parent when batch completes
+  // Auto-navigate to results page when batch completes
   useEffect(() => {
-    if (batchResults && onBatchResults) {
-      onBatchResults(batchResults)
+    if (batchResults && !isBatchRunning) {
+      if (onBatchComplete) {
+        onBatchComplete(batchResults)
+      }
+      navigate('/web-search/results')
     }
-  }, [batchResults, onBatchResults])
+  }, [batchResults, isBatchRunning, navigate, onBatchComplete])
 
   const handleRunAll = () => {
     startBatch(tests, wsConfig)
@@ -38,11 +44,11 @@ function WebSearchTestCases({ onSingleResult, onBatchResults }) {
 
   const handleRunSingle = async (test) => {
     setExecutingTestId(test.id)
+    setSingleResult(null)
     try {
       const result = await executeSingle(test.id, test, wsConfig)
-      if (onSingleResult) {
-        onSingleResult(test.id, result)
-      }
+      setSingleResult(result)
+      setSingleResultTestName(`${test.name} ${test.year}`)
     } catch (err) {
       console.error('Single test execution failed:', err)
     } finally {
@@ -54,14 +60,6 @@ function WebSearchTestCases({ onSingleResult, onBatchResults }) {
     if (window.confirm(`Are you sure you want to delete "${test.name}"?`)) {
       deleteTest(test.id)
     }
-  }
-
-  const handleExport = () => {
-    if (!batchResults) return
-    exportWebSearchResults(batchResults, {
-      system_prompt: wsConfig.system_prompt,
-      model: wsConfig.claude_model
-    })
   }
 
   // Sort tests by year descending (most recent first)
@@ -85,12 +83,13 @@ function WebSearchTestCases({ onSingleResult, onBatchResults }) {
       onCancelBatch={cancelBatch}
       ProgressComponent={WebSearchBatchProgress}
     >
-      {batchResults && (
-        <WebSearchResultsTable
-          results={batchResults}
-          tests={tests}
-          onExport={handleExport}
-        />
+      {singleResult && (
+        <div style={{ marginTop: '30px' }}>
+          <h2 style={{ fontSize: '20px', marginBottom: '10px', color: '#333' }}>
+            Result: {singleResultTestName}
+          </h2>
+          <ExecutionResult result={singleResult} />
+        </div>
       )}
     </TestCaseList>
   )

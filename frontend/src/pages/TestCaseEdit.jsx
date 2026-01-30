@@ -130,8 +130,8 @@ function TestCaseEdit() {
 
       await updateTestCase(id, updates)
 
-      // Navigate back to detail page
-      navigate(`/test-cases/${id}`)
+      // Navigate back to list
+      navigate('/')
     } catch (err) {
       setError(err.message || 'Failed to update test case')
       setIsSubmitting(false)
@@ -154,8 +154,8 @@ function TestCaseEdit() {
         <div style={styles.error}>
           <strong>Error:</strong> {error}
         </div>
-        <Link to={`/test-cases/${id}`} style={styles.cancelLink}>
-          Back to Detail
+        <Link to="/" style={styles.cancelLink}>
+          Back to List
         </Link>
       </div>
     )
@@ -254,7 +254,7 @@ function TestCaseEdit() {
             {isSubmitting ? 'Saving...' : 'Save Changes'}
           </button>
           <Link
-            to={`/test-cases/${id}`}
+            to="/"
             style={styles.cancelLink}
             onClick={(e) => {
               if (isSubmitting) e.preventDefault()
