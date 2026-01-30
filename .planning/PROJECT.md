@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A prompt engineering workbench for testing different prompting strategies to extract festival lineups from images and text. This is a developer tool to iterate on system prompts and model selection before deploying to a production service.
+A prompt engineering workbench for testing different prompting strategies to extract festival lineups from images, text, and web search. Supports two evaluation types: image-based extraction and web search-based discovery. This is a developer tool to iterate on system prompts and model selection before deploying to a production service.
 
 ## Core Value
 
@@ -22,14 +22,15 @@ Accurately measure which combination of system prompt + Claude model produces th
 - Test case persistence between sessions — v1.0
 - Local image storage with deduplication — v1.0
 - Results export as JSON — v1.0
+- ✓ Web search eval type (festival name + year → lineup via Claude web search) — v1.1
+- ✓ Separate tab UI for web search eval vs image eval — v1.1
+- ✓ Independent test cases per eval type — v1.1
+- ✓ Independent system prompt per eval type — v1.1
+- ✓ Batch execution scoped to current tab — v1.1
 
 ### Active
 
-- [ ] Web search eval type (festival name + year → lineup via Claude web search)
-- [ ] Separate tab UI for web search eval vs image eval
-- [ ] Independent test cases per eval type
-- [ ] Independent system prompt per eval type
-- [ ] Batch execution scoped to current tab
+(None — v1.1 shipped, define new requirements for next milestone)
 
 ### Out of Scope
 
@@ -40,24 +41,21 @@ Accurately measure which combination of system prompt + Claude model produces th
 - Test run history — deferred to v2
 - Cost/latency tracking — deferred to v2
 
-## Current Milestone: v1.1 Web Search Eval
+## Current State
 
-**Goal:** Add a second evaluation type that uses Claude's web search tools to find festival lineups from festival name + year.
+**Shipped:** v1.1 Web Search Eval (2026-01-29)
 
-**Target features:**
-- New "Web Search Eval" tab alongside existing image eval
-- Test cases with festival name + year as input
-- Claude web search tool integration for lineup discovery
-- Separate system prompt for web search strategy
-- Tab-scoped batch execution
+Two evaluation types now available:
+- **Image Eval:** Extract lineups from festival poster images
+- **Web Search Eval:** Discover lineups via Claude web search from festival name + year
 
 ## Context
 
-Shipped v1.0 with ~5,000 LOC (Python + React).
+Shipped v1.1 with ~7,900 LOC (Python + React).
 
-Tech stack: FastAPI backend, React + Vite frontend, JSON file storage, content-addressed image storage.
+Tech stack: FastAPI backend, React + Vite frontend, JSON file storage, content-addressed image storage, localStorage for web search config/tests.
 
-v1.1 adds a new eval dimension: testing prompt strategies for web-search-based lineup extraction, complementing the existing image-based extraction.
+v1.1 added web search evaluation alongside image-based evaluation. Users can now test prompt strategies for both visual and search-based lineup extraction in separate tabs with independent configurations.
 
 ## Constraints
 
@@ -71,12 +69,16 @@ v1.1 adds a new eval dimension: testing prompt strategies for web-search-based l
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Strict string matching | User wants precise evaluation, no fuzzy logic | Good |
-| Local-only tool | Development/testing use case, no need for deployment | Good |
-| Test data in UI | User prefers managing test cases through interface rather than config files | Good |
-| JSON file storage | Simple, human-readable, sufficient for handful of test cases | Good |
-| Content-addressed images | SHA-256 hash for deduplication, automatic optimization | Good |
-| localStorage for config | Prompt/model persist across page refreshes without backend | Good |
+| Strict string matching | User wants precise evaluation, no fuzzy logic | ✓ Good |
+| Local-only tool | Development/testing use case, no need for deployment | ✓ Good |
+| Test data in UI | User prefers managing test cases through interface rather than config files | ✓ Good |
+| JSON file storage | Simple, human-readable, sufficient for handful of test cases | ✓ Good |
+| Content-addressed images | SHA-256 hash for deduplication, automatic optimization | ✓ Good |
+| localStorage for config | Prompt/model persist across page refreshes without backend | ✓ Good |
+| Tabbed workspace UI (v1.1) | Separate eval types clearly, independent configs per tab | ✓ Good |
+| localStorage for web search tests (v1.1) | No backend needed for client-side test case storage | ✓ Good |
+| ARIA tab pattern (v1.1) | Accessibility best practice for workspace switching | ✓ Good |
+| Test data in request body (v1.1) | Web search tests live in localStorage, passed to backend on execution | ✓ Good |
 
 ---
-*Last updated: 2026-01-26 after starting v1.1 milestone*
+*Last updated: 2026-01-29 after v1.1 milestone*

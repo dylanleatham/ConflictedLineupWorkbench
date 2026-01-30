@@ -1,5 +1,36 @@
 # Project Milestones: Festival Lineup Prompt Evaluator
 
+## v1.1 Web Search Eval (Shipped: 2026-01-29)
+
+**Delivered:** A second evaluation type using Claude's web search tools to find festival lineups from festival name + year, alongside the existing image-based evaluation.
+
+**Phases completed:** 5-7 (6 plans total)
+
+**Key accomplishments:**
+
+- Tabbed workspace UI with ARIA accessibility for switching between Image Eval and Web Search Eval
+- Independent prompt/model configuration per workspace with localStorage persistence
+- Web search test case CRUD (create, edit, delete) with localStorage persistence
+- Backend API endpoints for web search execution with batch support and cancellation
+- Frontend execution hooks with progress polling and individual/batch run buttons
+- Results display with expandable inline diff, aggregate metrics, and JSON export
+
+**Stats:**
+
+- 40 files created/modified
+- +6,064 lines added (Python + JS/JSX)
+- 3 phases, 6 plans
+- 3 days from start to ship
+
+**Git range:** `feat(05-01)` → `docs(07)`
+
+**What's next:** User testing of web search prompt strategies, potential comparison tooling between eval types.
+
+---
+*Milestone completed: 2026-01-29*
+
+---
+
 ## v1.0 MVP (Shipped: 2026-01-24)
 
 **Delivered:** A complete prompt engineering workbench for testing Claude models against festival lineup extraction with test case management, batch execution, and results export.
