@@ -15,6 +15,7 @@ function ImageEvalTestCases({ onBatchComplete }) {
   const [executingTestId, setExecutingTestId] = useState(null)
   const [singleResult, setSingleResult] = useState(null)
   const [singleResultTestName, setSingleResultTestName] = useState(null)
+  const [testResults, setTestResults] = useState({})
 
   const navigate = useNavigate()
   const { start, cancel, progress, results, isRunning, error: batchError } = useBatchExecution()
@@ -60,8 +61,13 @@ function ImageEvalTestCases({ onBatchComplete }) {
       const result = await executeSingle(testCase.id, { system_prompt: systemPrompt, model: claudeModel })
       setSingleResult(result)
       setSingleResultTestName(testCase.name)
+      setTestResults(prev => ({ ...prev, [testCase.id]: result }))
     } catch (err) {
       console.error('Single test execution failed:', err)
+      const errorResult = { status: 'failed', error: err.message }
+      setSingleResult(errorResult)
+      setSingleResultTestName(testCase.name)
+      setTestResults(prev => ({ ...prev, [testCase.id]: errorResult }))
     } finally {
       setExecutingTestId(null)
     }
@@ -95,6 +101,7 @@ function ImageEvalTestCases({ onBatchComplete }) {
       batchError={batchError}
       onCancelBatch={cancel}
       ProgressComponent={BatchProgress}
+      testResults={testResults}
     >
       {singleResult && (
         <div style={{ marginTop: '30px' }}>

@@ -136,6 +136,51 @@
   color: white;
 }
 
+/* Last result display */
+.test-case-card-last-result {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.15);
+  font-size: 0.8em;
+}
+
+.last-result-label {
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+}
+
+.last-result-stats {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.last-result-passed {
+  color: #28a745;
+  font-weight: 500;
+}
+
+.last-result-failed {
+  color: #dc3545;
+  font-weight: 500;
+}
+
+.last-result-percentage {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  padding: 2px 6px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.last-result-error {
+  color: #dc3545;
+  font-weight: 500;
+}
+
 @media (prefers-color-scheme: light) {
   .test-case-card {
     background-color: rgba(0, 0, 0, 0.03);
@@ -170,5 +215,19 @@
   .test-case-card-actions {
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     background-color: rgba(0, 0, 0, 0.02);
+  }
+
+  .test-case-card-last-result {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+
+  .last-result-label {
+    color: rgba(33, 53, 71, 0.5);
+  }
+
+  .last-result-percentage {
+    color: rgba(33, 53, 71, 0.8);
+    background-color: rgba(0, 0, 0, 0.05);
   }
 }
