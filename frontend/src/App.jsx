@@ -49,15 +49,13 @@ function App() {
             <Route
               path="/"
               element={
-                isImageEval ? (
-                  <div id="panel-image" role="tabpanel" aria-labelledby="tab-image">
+                <div key={activeWorkspace} className="workspace-panel" role="tabpanel">
+                  {isImageEval ? (
                     <TestCaseList onBatchComplete={handleBatchComplete} />
-                  </div>
-                ) : (
-                  <div id="panel-web-search" role="tabpanel" aria-labelledby="tab-web-search">
+                  ) : (
                     <WebSearchTestList />
-                  </div>
-                )
+                  )}
+                </div>
               }
             />
             <Route path="/test-cases/new" element={<TestCaseCreate />} />

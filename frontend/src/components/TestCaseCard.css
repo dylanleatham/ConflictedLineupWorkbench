@@ -1,15 +1,18 @@
 .test-case-card {
-  display: block;
+  display: flex;
+  flex-direction: column;
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  text-decoration: none;
   color: inherit;
+}
+
+.test-case-card-clickable {
   cursor: pointer;
 }
 
-.test-case-card:hover {
+.test-case-card-clickable:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
@@ -41,8 +44,26 @@
   font-weight: 500;
 }
 
+/* Year badge for web-search variant */
+.test-case-card-year-badge {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(100, 108, 255, 0.2), rgba(100, 108, 255, 0.1));
+}
+
+.test-case-card-year-badge .year-value {
+  font-size: 2.5em;
+  font-weight: 700;
+  color: #646cff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .test-case-card-content {
   padding: 1rem;
+  flex: 1;
 }
 
 .test-case-card-title {
@@ -63,18 +84,78 @@
   font-weight: 500;
 }
 
+/* Action buttons row */
+.test-case-card-actions {
+  display: flex;
+  gap: 8px;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.test-case-card-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.test-case-card-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.test-case-card-btn:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.test-case-card-btn:not(:disabled):active {
+  transform: translateY(0);
+}
+
+.test-case-card-run-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.test-case-card-run-btn.running {
+  background-color: #6c757d;
+}
+
+.test-case-card-edit-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.test-case-card-delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
 @media (prefers-color-scheme: light) {
   .test-case-card {
     background-color: rgba(0, 0, 0, 0.03);
   }
 
-  .test-case-card:hover {
+  .test-case-card-clickable:hover {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   }
 
   .test-case-card-placeholder {
     background-color: rgba(100, 108, 255, 0.05);
     color: rgba(33, 53, 71, 0.4);
+  }
+
+  .test-case-card-year-badge {
+    background: linear-gradient(135deg, rgba(100, 108, 255, 0.15), rgba(100, 108, 255, 0.05));
+  }
+
+  .test-case-card-year-badge .year-value {
+    color: #535bf2;
   }
 
   .test-case-card-title {
@@ -84,5 +165,10 @@
   .test-case-card-badge {
     background-color: rgba(100, 108, 255, 0.15);
     color: #535bf2;
+  }
+
+  .test-case-card-actions {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.02);
   }
 }

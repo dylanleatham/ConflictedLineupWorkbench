@@ -1,5 +1,6 @@
 #root {
   height: 100vh;
+  width: 100%;
   margin: 0;
   padding: 0;
 }
@@ -7,6 +8,7 @@
 .app-layout {
   display: flex;
   height: 100vh;
+  width: 100%;
 }
 
 .sidebar {
@@ -18,9 +20,22 @@
 }
 
 .main-content {
-  flex: 1;
+  flex: 1 1 0%;
   overflow-y: auto;
   padding: 2rem;
+  min-width: 0;
+  width: 100%;
+}
+
+/* Ensure all children of main-content fill the width */
+.main-content > * {
+  width: 100%;
+}
+
+/* Panel containers should fill the main content area */
+.workspace-panel {
+  width: 100%;
+  min-height: 100%;
 }
 
 .logo {

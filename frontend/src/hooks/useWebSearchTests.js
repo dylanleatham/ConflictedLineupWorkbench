@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { useStickyState } from './useStickyState'
 
 /**
@@ -61,9 +62,9 @@ export function useWebSearchTests() {
    * @param {string} id - Test case ID
    * @returns {Object|undefined} Test case or undefined if not found
    */
-  const getTest = (id) => {
+  const getTest = useCallback((id) => {
     return tests.find(test => test.id === id)
-  }
+  }, [tests])
 
   return {
     tests,

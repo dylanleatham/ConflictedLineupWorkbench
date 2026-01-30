@@ -1,152 +1,96 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { getTestCases } from '../api/testCases'
-import TestCaseCard from '../components/TestCaseCard'
+import { useNavigate } from 'react-router-dom'
+import { getTestCases, deleteTestCase } from '../api/testCases'
 import { useBatchExecution } from '../hooks/useBatchExecution'
+import { useExecution } from '../hooks/useExecution'
 import { usePromptConfig } from '../hooks/usePromptConfig'
+import TestCaseList from '../components/TestCaseList'
 import BatchProgress from '../components/BatchProgress'
-import BatchResultsModal from '../components/BatchResultsModal'
 
-function TestCaseList({ onBatchComplete }) {
+function ImageEvalTestCases({ onBatchComplete }) {
   const [testCases, setTestCases] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [executingTestId, setExecutingTestId] = useState(null)
 
   const navigate = useNavigate()
-  const { start, cancel, reset, progress, results, isRunning, error: batchError } = useBatchExecution()
-
+  const { start, cancel, progress, results, isRunning, error: batchError } = useBatchExecution()
+  const { execute: executeSingle, isExecuting: isSingleExecuting } = useExecution()
   const { systemPrompt, claudeModel } = usePromptConfig()
 
   useEffect(() => {
-    async function fetchTestCases() {
-      try {
-        setLoading(true)
-        const data = await getTestCases()
-        setTestCases(data)
-        setError(null)
-      } catch (err) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
-    }
-
     fetchTestCases()
   }, [])
+
+  async function fetchTestCases() {
+    try {
+      setLoading(true)
+      const data = await getTestCases()
+      setTestCases(data)
+      setError(null)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   // Auto-navigate to results page when batch completes
   useEffect(() => {
     if (results && !isRunning) {
-      // Call parent callback to store results
       if (onBatchComplete) {
         onBatchComplete(results, { model: claudeModel, system_prompt: systemPrompt })
       }
-
-      // Navigate to results page
       navigate('/results')
     }
   }, [results, isRunning, navigate, onBatchComplete, claudeModel, systemPrompt])
 
-  const handleRunAll = (mode) => {
+  const handleRunAll = () => {
     const testIds = testCases.map(tc => tc.id)
-    start(testIds, mode, { system_prompt: systemPrompt, model: claudeModel })
+    start(testIds, 'image', { system_prompt: systemPrompt, model: claudeModel })
   }
 
-  if (loading) {
-    return (
-      <div className="container">
-        <div className="loading">Loading test cases...</div>
-      </div>
-    )
+  const handleRunSingle = async (testCase) => {
+    setExecutingTestId(testCase.id)
+    try {
+      await executeSingle(testCase.id, 'image', { system_prompt: systemPrompt, model: claudeModel })
+    } catch (err) {
+      console.error('Single test execution failed:', err)
+    } finally {
+      setExecutingTestId(null)
+    }
   }
 
-  if (error) {
-    return (
-      <div className="container">
-        <div className="error">
-          <h2>Error loading test cases</h2>
-          <p>{error}</p>
-        </div>
-      </div>
-    )
+  const handleDelete = async (testCase) => {
+    if (window.confirm(`Are you sure you want to delete "${testCase.name}"?`)) {
+      try {
+        await deleteTestCase(testCase.id)
+        await fetchTestCases()
+      } catch (err) {
+        setError(`Failed to delete: ${err.message}`)
+      }
+    }
   }
 
   return (
-    <div className="container">
-      <div className="page-header">
-        <h1>Test Cases</h1>
-        <div style={styles.actions}>
-          <Link to="/test-cases/new" className="button-primary">
-            Add Test Case
-          </Link>
-          <button
-            onClick={() => handleRunAll('text')}
-            disabled={isRunning || testCases.length === 0}
-            style={{
-              ...styles.runAllButton,
-              opacity: isRunning || testCases.length === 0 ? 0.6 : 1,
-              cursor: isRunning || testCases.length === 0 ? 'not-allowed' : 'pointer'
-            }}
-          >
-            Run All (Text)
-          </button>
-          <button
-            onClick={() => handleRunAll('image')}
-            disabled={isRunning || testCases.length === 0}
-            style={{
-              ...styles.runAllButton,
-              opacity: isRunning || testCases.length === 0 ? 0.6 : 1,
-              cursor: isRunning || testCases.length === 0 ? 'not-allowed' : 'pointer'
-            }}
-          >
-            Run All (Image)
-          </button>
-        </div>
-      </div>
-
-      {batchError && (
-        <div className="error" style={{ marginBottom: '20px' }}>
-          <p>Batch error: {batchError}</p>
-        </div>
-      )}
-
-      {isRunning && <BatchProgress progress={progress} onCancel={cancel} />}
-
-      {testCases.length === 0 ? (
-        <div className="empty-state">
-          <p>No test cases yet.</p>
-          <p>Create your first test case to get started.</p>
-          <Link to="/test-cases/new" className="button-primary">
-            Create Test Case
-          </Link>
-        </div>
-      ) : (
-        <div className="test-case-grid">
-          {testCases.map((testCase) => (
-            <TestCaseCard key={testCase.id} testCase={testCase} />
-          ))}
-        </div>
-      )}
-    </div>
+    <TestCaseList
+      testCases={testCases}
+      loading={loading}
+      error={error}
+      variant="image"
+      basePath="/test-cases"
+      onRunSingle={handleRunSingle}
+      onRunAll={handleRunAll}
+      onDelete={handleDelete}
+      executingTestId={executingTestId}
+      isSingleExecuting={isSingleExecuting}
+      isBatchRunning={isRunning}
+      batchProgress={progress}
+      batchError={batchError}
+      onCancelBatch={cancel}
+      ProgressComponent={BatchProgress}
+    />
   )
 }
 
-const styles = {
-  actions: {
-    display: 'flex',
-    gap: '10px',
-    alignItems: 'center'
-  },
-  runAllButton: {
-    padding: '10px 20px',
-    backgroundColor: '#28a745',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: '500'
-  }
-}
-
-export default TestCaseList
+export default ImageEvalTestCases
