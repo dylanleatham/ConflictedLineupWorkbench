@@ -24,6 +24,7 @@ function WebSearchTestCases({ onBatchComplete }) {
   const [executingTestId, setExecutingTestId] = useState(null)
   const [singleResult, setSingleResult] = useState(null)
   const [singleResultTestName, setSingleResultTestName] = useState(null)
+  const [testResults, setTestResults] = useState({})
 
   // Batch execution state
   const { start: startBatch, cancel: cancelBatch, progress, results: batchResults, isRunning: isBatchRunning, error: batchError } = useWebSearchBatch()
@@ -49,8 +50,13 @@ function WebSearchTestCases({ onBatchComplete }) {
       const result = await executeSingle(test.id, test, wsConfig)
       setSingleResult(result)
       setSingleResultTestName(`${test.name} ${test.year}`)
+      setTestResults(prev => ({ ...prev, [test.id]: result }))
     } catch (err) {
       console.error('Single test execution failed:', err)
+      const errorResult = { status: 'failed', error: err.message }
+      setSingleResult(errorResult)
+      setSingleResultTestName(`${test.name} ${test.year}`)
+      setTestResults(prev => ({ ...prev, [test.id]: errorResult }))
     } finally {
       setExecutingTestId(null)
     }
@@ -82,6 +88,7 @@ function WebSearchTestCases({ onBatchComplete }) {
       batchError={batchError}
       onCancelBatch={cancelBatch}
       ProgressComponent={WebSearchBatchProgress}
+      testResults={testResults}
     >
       {singleResult && (
         <div style={{ marginTop: '30px' }}>

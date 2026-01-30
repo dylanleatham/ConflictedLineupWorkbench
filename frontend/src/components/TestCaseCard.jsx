@@ -14,6 +14,7 @@ import './TestCaseCard.css'
  * @param {string} props.editPath - Path for Edit button
  * @param {boolean} props.isRunning - True if this test is currently running
  * @param {boolean} props.isDisabled - True if actions should be disabled (e.g., another test running)
+ * @param {object} props.lastResult - Last test result { status, accuracy: { matched, total_ground_truth, accuracy_percentage, extra }, error }
  */
 function TestCaseCard({
   testCase,
@@ -23,7 +24,8 @@ function TestCaseCard({
   detailPath,
   editPath,
   isRunning = false,
-  isDisabled = false
+  isDisabled = false,
+  lastResult = null
 }) {
   const navigate = useNavigate()
   const { name, lineup, image_hash, year } = testCase
@@ -112,6 +114,20 @@ function TestCaseCard({
           Delete
         </button>
       </div>
+      {lastResult && (
+        <div className="test-case-card-last-result">
+          <span className="last-result-label">Last Result:</span>
+          {lastResult.status === 'failed' ? (
+            <span className="last-result-error">Error</span>
+          ) : (
+            <div className="last-result-stats">
+              <span className="last-result-passed">{lastResult.accuracy.matched} pass</span>
+              <span className="last-result-failed">{lastResult.accuracy.total_ground_truth - lastResult.accuracy.matched} fail</span>
+              <span className="last-result-percentage">{lastResult.accuracy.accuracy_percentage.toFixed(0)}%</span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

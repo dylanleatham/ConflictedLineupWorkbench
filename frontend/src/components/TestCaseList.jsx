@@ -21,6 +21,7 @@ import TestCaseCard from './TestCaseCard'
  * @param {function} props.onCancelBatch - Called to cancel batch execution
  * @param {React.ComponentType} props.ProgressComponent - Component to render batch progress
  * @param {React.ReactNode} props.children - Optional content to render after the grid (e.g., results table)
+ * @param {object} props.testResults - Map of test ID to last result { [testId]: result }
  */
 function TestCaseList({
   testCases,
@@ -39,6 +40,7 @@ function TestCaseList({
   onCancelBatch,
   ProgressComponent,
   children,
+  testResults = {},
 }) {
   const anyExecutionRunning = isBatchRunning || executingTestId !== null
 
@@ -120,6 +122,7 @@ function TestCaseList({
                 editPath={`${basePath}/${testCase.id}/edit`}
                 isRunning={isThisTestRunning}
                 isDisabled={isDisabled}
+                lastResult={testResults[testCase.id]}
               />
             )
           })}
