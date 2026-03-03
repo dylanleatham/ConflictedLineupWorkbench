@@ -24,7 +24,8 @@ function TestCaseResultDetail() {
         setTestCase(tc)
 
         try {
-          const res = await getLastResult(id)
+          const ws = isWebSearch ? 'web-search' : 'image-eval'
+          const res = await getLastResult(id, ws)
           setResult(res)
         } catch {
           // No result saved yet - that's fine

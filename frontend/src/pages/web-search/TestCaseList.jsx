@@ -34,7 +34,7 @@ function WebSearchTestCases({ onBatchComplete }) {
       setError(null)
 
       try {
-        const savedResults = await getAllResults()
+        const savedResults = await getAllResults('web-search')
         setTestResults(savedResults)
       } catch {
         // No saved results yet

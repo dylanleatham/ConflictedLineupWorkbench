@@ -164,7 +164,7 @@ async def run_web_search_batch_execution(
                 metadata=metadata
             )
             state.results.append(result)
-            save_result(test.id, result.model_dump())
+            save_result(test.id, result.model_dump(), workspace="web-search")
             state.completed += 1
 
         except Exception as e:
@@ -176,7 +176,7 @@ async def run_web_search_batch_execution(
                 metadata=metadata
             )
             state.results.append(result)
-            save_result(test.id, result.model_dump())
+            save_result(test.id, result.model_dump(), workspace="web-search")
             state.failed += 1
             state.completed += 1
 
@@ -394,7 +394,7 @@ async def execute_web_search_test(
             error=None,
             metadata=metadata
         )
-        save_result(test_id, result.model_dump())
+        save_result(test_id, result.model_dump(), workspace="web-search")
         return result
 
     except asyncio.TimeoutError as e:
@@ -407,3 +407,21 @@ async def execute_web_search_test(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Execution failed: {str(e)}"
         )
+
+
+@router.get("/results/{test_id}")
+async def get_web_search_last_result(test_id: str):
+    """Get the last saved web search execution result for a test case."""
+    result = load_result(test_id, workspace="web-search")
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No saved result for test case '{test_id}'"
+        )
+    return result
+
+
+@router.get("/results", response_model=dict)
+async def get_all_web_search_results():
+    """Get all saved web search execution results, keyed by test_id."""
+    return load_all_results(workspace="web-search")

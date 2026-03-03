@@ -11,14 +11,22 @@ from .config import RESULTS_DIR, ensure_dirs
 logger = logging.getLogger(__name__)
 
 
-def save_result(test_id: str, result: dict) -> None:
+def _workspace_dir(workspace: str) -> Path:
+    """Get the results subdirectory for a workspace."""
+    d = RESULTS_DIR / workspace
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
+def save_result(test_id: str, result: dict, workspace: str = "image-eval") -> None:
     """Save the last execution result for a test case."""
     ensure_dirs()
-    file_path = RESULTS_DIR / f"{test_id}.json"
+    ws_dir = _workspace_dir(workspace)
+    file_path = ws_dir / f"{test_id}.json"
 
     with tempfile.NamedTemporaryFile(
         mode='w',
-        dir=RESULTS_DIR,
+        dir=ws_dir,
         delete=False,
         encoding='utf-8',
         suffix='.json'
@@ -29,9 +37,9 @@ def save_result(test_id: str, result: dict) -> None:
     tmp_path.replace(file_path)
 
 
-def load_result(test_id: str) -> Optional[dict]:
+def load_result(test_id: str, workspace: str = "image-eval") -> Optional[dict]:
     """Load the last execution result for a test case."""
-    file_path = RESULTS_DIR / f"{test_id}.json"
+    file_path = _workspace_dir(workspace) / f"{test_id}.json"
 
     if not file_path.exists():
         return None
@@ -44,12 +52,13 @@ def load_result(test_id: str) -> Optional[dict]:
         return None
 
 
-def load_all_results() -> dict:
+def load_all_results(workspace: str = "image-eval") -> dict:
     """Load all saved results. Returns dict of test_id -> result."""
     ensure_dirs()
+    ws_dir = _workspace_dir(workspace)
     results = {}
 
-    for json_file in RESULTS_DIR.glob("*.json"):
+    for json_file in ws_dir.glob("*.json"):
         test_id = json_file.stem
         try:
             with json_file.open('r', encoding='utf-8') as f:
@@ -61,9 +70,9 @@ def load_all_results() -> dict:
     return results
 
 
-def delete_result(test_id: str) -> bool:
+def delete_result(test_id: str, workspace: str = "image-eval") -> bool:
     """Delete the saved result for a test case."""
-    file_path = RESULTS_DIR / f"{test_id}.json"
+    file_path = _workspace_dir(workspace) / f"{test_id}.json"
 
     if not file_path.exists():
         return False
