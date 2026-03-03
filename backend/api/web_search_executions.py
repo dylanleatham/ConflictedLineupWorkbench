@@ -10,6 +10,7 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException, status
 from pydantic import BaseModel
 
 from backend.services import calculate_accuracy, extract_lineup_from_text
+from backend.storage import save_result, load_result, load_all_results
 
 
 router = APIRouter(prefix="/api/web-search/executions", tags=["web-search-executions"])
@@ -154,24 +155,28 @@ async def run_web_search_batch_execution(
             accuracy_dict = calculate_accuracy(extracted_lineup, test.ground_truth_lineup)
             accuracy_result = AccuracyResult(**accuracy_dict)
 
-            state.results.append(WebSearchExecutionResult(
+            result = WebSearchExecutionResult(
                 test_id=test.id,
                 status="success",
                 extracted_lineup=extracted_lineup,
                 accuracy=accuracy_result,
                 error=None,
                 metadata=metadata
-            ))
+            )
+            state.results.append(result)
+            save_result(test.id, result.model_dump())
             state.completed += 1
 
         except Exception as e:
             # Any error - mark as failed but continue
-            state.results.append(WebSearchExecutionResult(
+            result = WebSearchExecutionResult(
                 test_id=test.id,
                 status="failed",
                 error=str(e),
                 metadata=metadata
-            ))
+            )
+            state.results.append(result)
+            save_result(test.id, result.model_dump())
             state.failed += 1
             state.completed += 1
 
@@ -381,7 +386,7 @@ async def execute_web_search_test(
         accuracy_dict = calculate_accuracy(extracted_lineup, request.ground_truth_lineup)
         accuracy_result = AccuracyResult(**accuracy_dict)
 
-        return WebSearchExecutionResult(
+        result = WebSearchExecutionResult(
             test_id=test_id,
             status="success",
             extracted_lineup=extracted_lineup,
@@ -389,6 +394,8 @@ async def execute_web_search_test(
             error=None,
             metadata=metadata
         )
+        save_result(test_id, result.model_dump())
+        return result
 
     except asyncio.TimeoutError as e:
         raise HTTPException(

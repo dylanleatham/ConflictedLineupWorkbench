@@ -111,6 +111,12 @@ function ExecutionResult({ result }) {
           <div style={styles.metadataItem}>
             <strong>Timestamp:</strong> {new Date(metadata.timestamp).toLocaleString()}
           </div>
+          {metadata.system_prompt && (
+            <div style={{ ...styles.metadataItem, flexBasis: '100%' }}>
+              <strong>Prompt:</strong>
+              <div style={styles.promptText}>{metadata.system_prompt}</div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -240,6 +246,16 @@ const styles = {
   metadataItem: {
     fontSize: '14px',
     color: '#666',
+  },
+  promptText: {
+    marginTop: '4px',
+    padding: '8px 10px',
+    backgroundColor: '#f0f0f0',
+    borderRadius: '4px',
+    fontSize: '13px',
+    fontFamily: 'monospace',
+    whiteSpace: 'pre-wrap',
+    wordBreak: 'break-word',
   },
 }
 

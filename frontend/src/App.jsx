@@ -8,6 +8,7 @@ import TestCaseList from './pages/TestCaseList'
 import TestCaseCreate from './pages/TestCaseCreate'
 import TestCaseEdit from './pages/TestCaseEdit'
 import ResultsPage from './pages/ResultsPage'
+import TestCaseResultDetail from './pages/TestCaseResultDetail'
 import WebSearchTestList from './pages/web-search/TestCaseList'
 import WebSearchTestCreate from './pages/web-search/TestCaseCreate'
 import WebSearchTestEdit from './pages/web-search/TestCaseEdit'
@@ -17,7 +18,7 @@ import './App.css'
 // Redirect component for legacy detail view URLs
 function TestCaseRedirect() {
   const { id } = useParams()
-  return <Navigate to={`/test-cases/${id}/edit`} replace />
+  return <Navigate to={`/test-cases/${id}/results`} replace />
 }
 
 function AppContent() {
@@ -105,6 +106,7 @@ function AppContent() {
             />
             <Route path="/test-cases/new" element={<TestCaseCreate />} />
             <Route path="/test-cases/:id" element={<TestCaseRedirect />} />
+            <Route path="/test-cases/:id/results" element={<TestCaseResultDetail />} />
             <Route path="/test-cases/:id/edit" element={<TestCaseEdit />} />
             {/* Web Search Eval routes */}
             <Route
@@ -126,6 +128,7 @@ function AppContent() {
               }
             />
             <Route path="/web-search/test-cases/new" element={<WebSearchTestCreate />} />
+            <Route path="/web-search/test-cases/:id/results" element={<TestCaseResultDetail />} />
             <Route path="/web-search/test-cases/:id/edit" element={<WebSearchTestEdit />} />
           </Routes>
         </main>

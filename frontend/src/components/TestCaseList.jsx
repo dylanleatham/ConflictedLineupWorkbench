@@ -39,6 +39,7 @@ function TestCaseList({
   ProgressComponent,
   children,
   testResults = {},
+  cardDetailSuffix = 'edit',
 }) {
   const anyExecutionRunning = isBatchRunning || executingTestId !== null
 
@@ -115,7 +116,7 @@ function TestCaseList({
                 testCase={testCase}
                 onRun={() => onRunSingle(testCase)}
                 onDelete={() => onDelete(testCase)}
-                detailPath={`${basePath}/${testCase.id}/edit`}
+                detailPath={`${basePath}/${testCase.id}/${cardDetailSuffix}`}
                 editPath={`${basePath}/${testCase.id}/edit`}
                 isRunning={isThisTestRunning}
                 isDisabled={isDisabled}

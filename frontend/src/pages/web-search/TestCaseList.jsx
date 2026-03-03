@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getTestCases, deleteTestCase } from '../../api/testCases'
+import { getAllResults } from '../../api/results'
 import { useWebSearchExecution } from '../../hooks/useWebSearchExecution'
 import { useWebSearchBatch } from '../../hooks/useWebSearchBatch'
 import { useStickyState } from '../../hooks/useStickyState'
@@ -31,6 +32,13 @@ function WebSearchTestCases({ onBatchComplete }) {
       const data = await getTestCases()
       setTests(data)
       setError(null)
+
+      try {
+        const savedResults = await getAllResults()
+        setTestResults(savedResults)
+      } catch {
+        // No saved results yet
+      }
     } catch (err) {
       setError(err.message)
     } finally {
@@ -112,6 +120,7 @@ function WebSearchTestCases({ onBatchComplete }) {
       onCancelBatch={cancelBatch}
       ProgressComponent={WebSearchBatchProgress}
       testResults={testResults}
+      cardDetailSuffix="results"
     >
       {singleResult && (
         <div style={{ marginTop: '30px' }}>

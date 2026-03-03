@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getTestCases, deleteTestCase } from '../api/testCases'
+import { getAllResults } from '../api/results'
 import { useBatchExecution } from '../hooks/useBatchExecution'
 import { useExecution } from '../hooks/useExecution'
 import { usePromptConfig } from '../hooks/usePromptConfig'
@@ -32,6 +33,14 @@ function ImageEvalTestCases({ onBatchComplete }) {
       const data = await getTestCases()
       setTestCases(data)
       setError(null)
+
+      // Load persisted results for card badges
+      try {
+        const savedResults = await getAllResults()
+        setTestResults(savedResults)
+      } catch {
+        // No saved results yet - that's fine
+      }
     } catch (err) {
       setError(err.message)
     } finally {
@@ -101,6 +110,7 @@ function ImageEvalTestCases({ onBatchComplete }) {
       onCancelBatch={cancel}
       ProgressComponent={BatchProgress}
       testResults={testResults}
+      cardDetailSuffix="results"
     >
       {singleResult && (
         <div style={{ marginTop: '30px' }}>

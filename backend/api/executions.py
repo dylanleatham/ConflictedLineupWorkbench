@@ -10,7 +10,7 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException, status
 from pydantic import BaseModel
 
 from backend.services import calculate_accuracy, extract_lineup_from_image
-from backend.storage import load_test_case, IMAGES_DIR
+from backend.storage import load_test_case, IMAGES_DIR, save_result, load_result, load_all_results
 
 router = APIRouter(prefix="/api/executions", tags=["executions"])
 
@@ -145,7 +145,7 @@ async def execute_test(test_id: str, request: ExecutionRequest) -> ExecutionResu
         accuracy_dict = calculate_accuracy(extracted_lineup, test_case.lineup)
         accuracy_result = AccuracyResult(**accuracy_dict)
 
-        return ExecutionResult(
+        result = ExecutionResult(
             test_id=test_id,
             status="success",
             extracted_lineup=extracted_lineup,
@@ -153,6 +153,8 @@ async def execute_test(test_id: str, request: ExecutionRequest) -> ExecutionResu
             error=None,
             metadata=metadata
         )
+        save_result(test_id, result.model_dump())
+        return result
 
     except asyncio.TimeoutError as e:
         raise HTTPException(
@@ -230,24 +232,28 @@ async def run_batch_execution(batch_id: str, test_ids: List[str]) -> None:
             accuracy_dict = calculate_accuracy(extracted_lineup, test_case.lineup)
             accuracy_result = AccuracyResult(**accuracy_dict)
 
-            state.results.append(ExecutionResult(
+            result = ExecutionResult(
                 test_id=test_id,
                 status="success",
                 extracted_lineup=extracted_lineup,
                 accuracy=accuracy_result,
                 error=None,
                 metadata=metadata
-            ))
+            )
+            state.results.append(result)
+            save_result(test_id, result.model_dump())
             state.completed += 1
 
         except Exception as e:
             # Any error - mark as failed but continue
-            state.results.append(ExecutionResult(
+            result = ExecutionResult(
                 test_id=test_id,
                 status="failed",
                 error=str(e),
                 metadata=metadata
-            ))
+            )
+            state.results.append(result)
+            save_result(test_id, result.model_dump())
             state.failed += 1
             state.completed += 1
 
@@ -408,3 +414,21 @@ async def get_batch_results(batch_id: str) -> BatchSummary:
         average_accuracy=round(average_accuracy, 2),
         results=state.results
     )
+
+
+@router.get("/results/{test_id}")
+async def get_last_result(test_id: str):
+    """Get the last saved execution result for a test case."""
+    result = load_result(test_id)
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No saved result for test case '{test_id}'"
+        )
+    return result
+
+
+@router.get("/results", response_model=dict)
+async def get_all_results():
+    """Get all saved execution results, keyed by test_id."""
+    return load_all_results()
