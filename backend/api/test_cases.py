@@ -23,6 +23,7 @@ class CreateTestCaseRequest(BaseModel):
     name: str
     lineup: List[str]
     image_hash: Optional[str] = None
+    year: Optional[str] = None
 
 
 class UpdateTestCaseRequest(BaseModel):
@@ -30,6 +31,7 @@ class UpdateTestCaseRequest(BaseModel):
     name: Optional[str] = None
     lineup: Optional[List[str]] = None
     image_hash: Optional[str] = None
+    year: Optional[str] = None
 
 
 def generate_id(name: str) -> str:
@@ -73,7 +75,8 @@ async def create_test_case(request: CreateTestCaseRequest) -> TestCase:
         id=test_id,
         name=request.name,
         lineup=request.lineup,
-        image_hash=request.image_hash
+        image_hash=request.image_hash,
+        year=request.year
     )
 
     # Save to storage
@@ -146,6 +149,8 @@ async def update_test_case(test_id: str, request: UpdateTestCaseRequest) -> Test
         test_case.lineup = request.lineup
     if request.image_hash is not None:
         test_case.image_hash = request.image_hash
+    if request.year is not None:
+        test_case.year = request.year
 
     # Save updated test case
     save_test_case(test_case)

@@ -7,12 +7,11 @@ import { GroundTruthLineupField, parseLineup } from '../components/GroundTruthLi
 
 function TestCaseCreate() {
   const navigate = useNavigate()
-
   // Form state
   const [name, setName] = useState('')
+  const [year, setYear] = useState('')
   const [imageFile, setImageFile] = useState(null)
   const [lineup, setLineup] = useState('')
-
   // UI state
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState(null)
@@ -33,6 +32,16 @@ function TestCaseCreate() {
   const validateForm = () => {
     if (!name.trim()) {
       setError('Festival name is required')
+      return false
+    }
+
+    if (!year.trim()) {
+      setError('Year is required')
+      return false
+    }
+
+    if (!/^\d{4}$/.test(year.trim())) {
+      setError('Year must be a 4-digit number')
       return false
     }
 
@@ -70,7 +79,8 @@ function TestCaseCreate() {
       const artists = parseLineup(lineup)
 
       // Create test case
-      const testCase = await createTestCase(name.trim(), artists, imageHash)
+      const trimmedYear = year.trim() || null
+      const testCase = await createTestCase(name.trim(), artists, imageHash, trimmedYear)
 
       // Navigate to list
       navigate('/')
@@ -104,6 +114,23 @@ function TestCaseCreate() {
             disabled={isSubmitting}
             style={styles.input}
             placeholder="e.g. Coachella 2024"
+          />
+        </div>
+
+        {/* Year */}
+        <div style={styles.field}>
+          <label htmlFor="year" style={styles.label}>
+            Year *
+          </label>
+          <input
+            id="year"
+            type="text"
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
+            disabled={isSubmitting}
+            style={{ ...styles.input, maxWidth: '120px' }}
+            placeholder="e.g. 2024"
+            maxLength={4}
           />
         </div>
 

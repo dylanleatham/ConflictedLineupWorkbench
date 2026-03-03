@@ -30,6 +30,7 @@ class TestCase(BaseModel):
     id: str = Field(..., description="Unique identifier for the test case")
     name: str = Field(..., description="Festival name (e.g., 'Coachella 2024')")
     image_hash: Optional[str] = Field(None, description="SHA-256 hash of stored image, None if no image")
+    year: Optional[str] = Field(None, description="Festival year (e.g., '2024')")
     lineup: List[str] = Field(default_factory=list, description="Ground truth list of artist names")
 
     model_config = {

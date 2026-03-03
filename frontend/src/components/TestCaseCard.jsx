@@ -7,7 +7,6 @@ import './TestCaseCard.css'
  *
  * @param {object} props
  * @param {object} props.testCase - Test case data { id, name, lineup, image_hash?, year? }
- * @param {string} props.variant - "image" | "web-search"
  * @param {function} props.onRun - Called when Run button is clicked
  * @param {function} props.onDelete - Called when Delete button is clicked
  * @param {string} props.detailPath - Path to navigate when card body is clicked (optional)
@@ -18,7 +17,6 @@ import './TestCaseCard.css'
  */
 function TestCaseCard({
   testCase,
-  variant = 'image',
   onRun,
   onDelete,
   detailPath,
@@ -30,8 +28,8 @@ function TestCaseCard({
   const navigate = useNavigate()
   const { name, lineup, image_hash, year } = testCase
 
-  // Get image URL for image variant
-  const imageUrl = variant === 'image' && image_hash ? getImageUrl(image_hash) : null
+  // Get image URL if available
+  const imageUrl = image_hash ? getImageUrl(image_hash) : null
 
   // Count artists in lineup
   const artistCount = lineup ? lineup.length : 0
@@ -73,20 +71,14 @@ function TestCaseCard({
       onClick={handleCardClick}
     >
       <div className="test-case-card-image">
-        {variant === 'image' ? (
-          imageUrl ? (
-            <img src={imageUrl} alt={name} />
-          ) : (
-            <div className="test-case-card-placeholder">No Image</div>
-          )
+        {imageUrl ? (
+          <img src={imageUrl} alt={name} />
         ) : (
-          <div className="test-case-card-year-badge">
-            <span className="year-value">{year || 'N/A'}</span>
-          </div>
+          <div className="test-case-card-placeholder">No Image</div>
         )}
       </div>
       <div className="test-case-card-content">
-        <h3 className="test-case-card-title">{name}</h3>
+        <h3 className="test-case-card-title">{name} {year}</h3>
         <div className="test-case-card-badge">
           {artistCount} {artistCount === 1 ? 'artist' : 'artists'}
         </div>

@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
-import { useWebSearchTests } from '../../hooks/useWebSearchTests'
+import { getTestCase, updateTestCase } from '../../api/testCases'
 import { GroundTruthLineupField, parseLineup } from '../../components/GroundTruthLineupField'
 
 function TestCaseEdit() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { getTest, updateTest } = useWebSearchTests()
-
   // Form state
   const [name, setName] = useState('')
   const [year, setYear] = useState('')
@@ -23,20 +21,20 @@ function TestCaseEdit() {
    * Load test case data on mount and pre-fill form.
    */
   useEffect(() => {
-    const test = getTest(id)
-
-    if (!test) {
-      setNotFound(true)
-      setIsLoading(false)
-      return
+    async function loadTestCase() {
+      try {
+        const test = await getTestCase(id)
+        setName(test.name)
+        setYear(test.year || '')
+        setLineup(test.lineup.join('\n'))
+      } catch {
+        setNotFound(true)
+      } finally {
+        setIsLoading(false)
+      }
     }
-
-    // Pre-fill form fields
-    setName(test.name)
-    setYear(test.year)
-    setLineup(test.lineup.join('\n'))
-    setIsLoading(false)
-  }, [id, getTest])
+    loadTestCase()
+  }, [id])
 
   /**
    * Validate form before submission.
@@ -83,8 +81,8 @@ function TestCaseEdit() {
       // Parse lineup
       const artists = parseLineup(lineup)
 
-      // Update test case
-      updateTest(id, {
+      // Update test case via API
+      await updateTestCase(id, {
         name: name.trim(),
         year: year.trim(),
         lineup: artists

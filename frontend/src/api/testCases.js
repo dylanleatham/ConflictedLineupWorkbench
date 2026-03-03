@@ -12,12 +12,10 @@ import { apiGet, apiPost, apiPut, apiDelete } from './client'
  * @param {string|null} imageHash - Optional image hash
  * @returns {Promise<object>} - Created test case
  */
-export async function createTestCase(name, lineup, imageHash = null) {
-  return apiPost('/test-cases', {
-    name,
-    lineup,
-    image_hash: imageHash,
-  })
+export async function createTestCase(name, lineup, imageHash = null, year = null) {
+  const body = { name, lineup, image_hash: imageHash }
+  if (year) body.year = year
+  return apiPost('/test-cases', body)
 }
 
 /**

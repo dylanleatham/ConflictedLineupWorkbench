@@ -1,4 +1,5 @@
-import { useWebSearchTests } from '../../hooks/useWebSearchTests'
+import { useState, useEffect } from 'react'
+import { getTestCases } from '../../api/testCases'
 import WebSearchResultsTable from '../../components/WebSearchResultsTable'
 import { exportWebSearchResults } from '../../utils/webSearchExport'
 import { useStickyState } from '../../hooks/useStickyState'
@@ -10,8 +11,12 @@ const DEFAULT_CONFIG = {
 }
 
 function WebSearchResultsPage({ batchResults }) {
-  const { tests } = useWebSearchTests()
+  const [tests, setTests] = useState([])
   const [wsConfig] = useStickyState(DEFAULT_CONFIG, 'web-search-eval:prompt-config')
+
+  useEffect(() => {
+    getTestCases().then(setTests).catch(() => {})
+  }, [])
 
   const handleExport = () => {
     if (!batchResults) return

@@ -11,6 +11,7 @@ function TestCaseEdit() {
 
   // Form state
   const [name, setName] = useState('')
+  const [year, setYear] = useState('')
   const [imageFile, setImageFile] = useState(null)
   const [lineup, setLineup] = useState('')
   const [existingImageHash, setExistingImageHash] = useState(null)
@@ -34,6 +35,7 @@ function TestCaseEdit() {
 
         // Pre-fill form fields
         setName(data.name)
+        setYear(data.year || '')
         setExistingImageHash(data.image_hash)
         setLineup(data.lineup.join('\n'))
       } catch (err) {
@@ -82,6 +84,16 @@ function TestCaseEdit() {
       return false
     }
 
+    if (!year.trim()) {
+      setError('Year is required')
+      return false
+    }
+
+    if (!/^\d{4}$/.test(year.trim())) {
+      setError('Year must be a 4-digit number')
+      return false
+    }
+
     const artists = parseLineup(lineup)
     if (artists.length === 0) {
       setError('At least one artist is required')
@@ -126,6 +138,7 @@ function TestCaseEdit() {
         name: name.trim(),
         lineup: artists,
         image_hash: imageHash,
+        year: year.trim() || null,
       }
 
       await updateTestCase(id, updates)
@@ -190,6 +203,23 @@ function TestCaseEdit() {
             disabled={isSubmitting}
             style={styles.input}
             placeholder="e.g. Coachella 2024"
+          />
+        </div>
+
+        {/* Year */}
+        <div style={styles.field}>
+          <label htmlFor="year" style={styles.label}>
+            Year *
+          </label>
+          <input
+            id="year"
+            type="text"
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
+            disabled={isSubmitting}
+            style={{ ...styles.input, maxWidth: '120px' }}
+            placeholder="e.g. 2024"
+            maxLength={4}
           />
         </div>
 

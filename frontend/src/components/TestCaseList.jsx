@@ -8,7 +8,6 @@ import TestCaseCard from './TestCaseCard'
  * @param {Array} props.testCases - Array of test case objects
  * @param {boolean} props.loading - Whether test cases are loading
  * @param {string} props.error - Error message if loading failed
- * @param {string} props.variant - "image" | "web-search"
  * @param {string} props.basePath - Base path for routes (e.g., "/test-cases" or "/web-search/test-cases")
  * @param {function} props.onRunSingle - (testCase) => void - Called when Run button is clicked
  * @param {function} props.onRunAll - () => void - Called when Run All button is clicked
@@ -27,7 +26,6 @@ function TestCaseList({
   testCases,
   loading,
   error,
-  variant,
   basePath,
   onRunSingle,
   onRunAll,
@@ -115,7 +113,6 @@ function TestCaseList({
               <TestCaseCard
                 key={testCase.id}
                 testCase={testCase}
-                variant={variant}
                 onRun={() => onRunSingle(testCase)}
                 onDelete={() => onDelete(testCase)}
                 detailPath={`${basePath}/${testCase.id}/edit`}

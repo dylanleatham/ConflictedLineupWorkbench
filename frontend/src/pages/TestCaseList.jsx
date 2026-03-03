@@ -89,7 +89,6 @@ function ImageEvalTestCases({ onBatchComplete }) {
       testCases={testCases}
       loading={loading}
       error={error}
-      variant="image"
       basePath="/test-cases"
       onRunSingle={handleRunSingle}
       onRunAll={handleRunAll}

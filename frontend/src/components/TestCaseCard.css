@@ -44,22 +44,6 @@
   font-weight: 500;
 }
 
-/* Year badge for web-search variant */
-.test-case-card-year-badge {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, rgba(100, 108, 255, 0.2), rgba(100, 108, 255, 0.1));
-}
-
-.test-case-card-year-badge .year-value {
-  font-size: 2.5em;
-  font-weight: 700;
-  color: #646cff;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
 
 .test-case-card-content {
   padding: 1rem;
@@ -193,14 +177,6 @@
   .test-case-card-placeholder {
     background-color: rgba(100, 108, 255, 0.05);
     color: rgba(33, 53, 71, 0.4);
-  }
-
-  .test-case-card-year-badge {
-    background: linear-gradient(135deg, rgba(100, 108, 255, 0.15), rgba(100, 108, 255, 0.05));
-  }
-
-  .test-case-card-year-badge .year-value {
-    color: #535bf2;
   }
 
   .test-case-card-title {

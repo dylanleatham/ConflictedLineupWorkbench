@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useWebSearchTests } from '../../hooks/useWebSearchTests'
+import { getTestCases, deleteTestCase } from '../../api/testCases'
 import { useWebSearchExecution } from '../../hooks/useWebSearchExecution'
 import { useWebSearchBatch } from '../../hooks/useWebSearchBatch'
 import { useStickyState } from '../../hooks/useStickyState'
@@ -16,8 +16,27 @@ const DEFAULT_CONFIG = {
 
 function WebSearchTestCases({ onBatchComplete }) {
   const navigate = useNavigate()
-  const { tests, deleteTest } = useWebSearchTests()
+  const [tests, setTests] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [wsConfig] = useStickyState(DEFAULT_CONFIG, 'web-search-eval:prompt-config')
+
+  useEffect(() => {
+    fetchTests()
+  }, [])
+
+  async function fetchTests() {
+    try {
+      setLoading(true)
+      const data = await getTestCases()
+      setTests(data)
+      setError(null)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   // Single test execution state
   const { execute: executeSingle, isExecuting: isSingleExecuting } = useWebSearchExecution()
@@ -62,9 +81,14 @@ function WebSearchTestCases({ onBatchComplete }) {
     }
   }
 
-  const handleDelete = (test) => {
+  const handleDelete = async (test) => {
     if (window.confirm(`Are you sure you want to delete "${test.name}"?`)) {
-      deleteTest(test.id)
+      try {
+        await deleteTestCase(test.id)
+        await fetchTests()
+      } catch (err) {
+        setError(`Failed to delete: ${err.message}`)
+      }
     }
   }
 
@@ -74,9 +98,8 @@ function WebSearchTestCases({ onBatchComplete }) {
   return (
     <TestCaseList
       testCases={sortedTests}
-      loading={false}
-      error={null}
-      variant="web-search"
+      loading={loading}
+      error={error}
       basePath="/web-search/test-cases"
       onRunSingle={handleRunSingle}
       onRunAll={handleRunAll}

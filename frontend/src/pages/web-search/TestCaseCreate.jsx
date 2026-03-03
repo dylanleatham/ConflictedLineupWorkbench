@@ -1,12 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useWebSearchTests } from '../../hooks/useWebSearchTests'
+import { createTestCase } from '../../api/testCases'
 import { GroundTruthLineupField, parseLineup } from '../../components/GroundTruthLineupField'
 
 function TestCaseCreate() {
   const navigate = useNavigate()
-  const { createTest } = useWebSearchTests()
-
   // Form state
   const [name, setName] = useState('')
   const [year, setYear] = useState('')
@@ -61,8 +59,8 @@ function TestCaseCreate() {
       // Parse lineup
       const artists = parseLineup(lineup)
 
-      // Create test case
-      createTest(name.trim(), year.trim(), artists)
+      // Create test case via API
+      await createTestCase(name.trim(), artists, null, year.trim())
 
       // Navigate to list
       navigate('/web-search')
