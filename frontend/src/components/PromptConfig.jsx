@@ -7,11 +7,11 @@ import './PromptConfig.css';
 const DEFAULTS = {
   'image-eval': {
     prompt: 'Extract the festival lineup from this image. Return a JSON array of artist names.',
-    model: 'claude-sonnet-4-6-20250610'
+    model: 'claude-sonnet-4-6'
   },
   'web-search-eval': {
     prompt: 'Search for the festival lineup and return the artist names as a JSON array.',
-    model: 'claude-sonnet-4-6-20250610'
+    model: 'claude-sonnet-4-6'
   }
 };
 
@@ -182,12 +182,12 @@ function PromptConfig({ workspace = 'image-eval' }) {
           onChange={handleModelChange}
           className="model-select"
         >
-          <option value="claude-sonnet-4-6-20250610">Claude Sonnet 4.6</option>
-          <option value="claude-opus-4-6-20250610">Claude Opus 4.6</option>
+          <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
+          <option value="claude-opus-4-6">Claude Opus 4.6</option>
           <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5</option>
           <option value="claude-sonnet-4-20250514">Claude Sonnet 4</option>
           <option value="claude-opus-4-20250514">Claude Opus 4</option>
-          <option value="claude-opus-4-5-20250115">Claude Opus 4.5</option>
+          <option value="claude-opus-4-5-20251101">Claude Opus 4.5</option>
         </select>
       </div>
     </div>

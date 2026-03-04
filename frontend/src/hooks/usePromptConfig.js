@@ -9,7 +9,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { getPromptConfig } from '../api/prompts'
 
 const DEFAULT_SYSTEM_PROMPT = 'Extract the festival lineup from this image. Return a JSON array of artist names.'
-const DEFAULT_MODEL = 'claude-sonnet-4-6-20250610'
+const DEFAULT_MODEL = 'claude-sonnet-4-6'
 const STORAGE_KEY = 'festival-evaluator:prompt-config'
 
 /**

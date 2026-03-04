@@ -11,7 +11,7 @@ class PromptConfig(BaseModel):
         description="System prompt sent to Claude API"
     )
     claude_model: str = Field(
-        default="claude-sonnet-4-6-20250610",
+        default="claude-sonnet-4-6",
         description="Claude model identifier"
     )
 
@@ -19,7 +19,7 @@ class PromptConfig(BaseModel):
         "json_schema_extra": {
             "example": {
                 "system_prompt": "Extract the festival lineup from this image. Return a JSON array of artist names.",
-                "claude_model": "claude-sonnet-4-6-20250610"
+                "claude_model": "claude-sonnet-4-6"
             }
         }
     }
