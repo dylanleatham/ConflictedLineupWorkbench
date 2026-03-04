@@ -3,13 +3,37 @@
 import asyncio
 import base64
 import json
+import logging
 import os
 import re
 from pathlib import Path
 from typing import List
 
-from anthropic import AsyncAnthropic
+from anthropic import AsyncAnthropic, RateLimitError
 from PIL import Image
+
+logger = logging.getLogger(__name__)
+
+# Retry settings (tuned for tokens-per-minute rate limits)
+MAX_RETRIES = 5
+INITIAL_BACKOFF = 15.0  # seconds
+MAX_BACKOFF = 120.0  # seconds
+
+
+async def _call_with_retry(client, **kwargs) -> object:
+    """Call client.messages.create with exponential backoff on rate limits."""
+    for attempt in range(MAX_RETRIES):
+        try:
+            return await client.messages.create(**kwargs)
+        except RateLimitError as e:
+            if attempt == MAX_RETRIES - 1:
+                raise
+            backoff = min(INITIAL_BACKOFF * (2 ** attempt), MAX_BACKOFF)
+            logger.warning(
+                f"Rate limited (attempt {attempt + 1}/{MAX_RETRIES}), "
+                f"retrying in {backoff:.1f}s: {e}"
+            )
+            await asyncio.sleep(backoff)
 
 
 def parse_claude_json_response(response_text: str) -> List[str]:
@@ -69,7 +93,7 @@ async def extract_lineup_from_text(
     festival_name: str,
     system_prompt: str,
     model: str,
-    timeout: float = 60.0
+    timeout: float = 120.0
 ) -> List[str]:
     """
     Extract lineup from festival name using Claude with web search.
@@ -98,7 +122,8 @@ async def extract_lineup_from_text(
 
     try:
         response = await asyncio.wait_for(
-            client.messages.create(
+            _call_with_retry(
+                client,
                 model=model,
                 max_tokens=4096,
                 system=system_prompt,
@@ -135,7 +160,7 @@ async def extract_lineup_from_image(
     image_path: Path,
     system_prompt: str,
     model: str,
-    timeout: float = 60.0
+    timeout: float = 120.0
 ) -> List[str]:
     """
     Extract lineup from festival poster image using Claude's vision.
@@ -189,7 +214,8 @@ async def extract_lineup_from_image(
 
     try:
         response = await asyncio.wait_for(
-            client.messages.create(
+            _call_with_retry(
+                client,
                 model=model,
                 max_tokens=4096,
                 system=system_prompt,
