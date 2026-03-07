@@ -12,6 +12,10 @@ const DEFAULTS = {
   'web-search-eval': {
     prompt: 'Search for the festival lineup and return the artist names as a JSON array.',
     model: 'claude-sonnet-4-6'
+  },
+  'poster-search-eval': {
+    prompt: 'Search for the lineup poster image for this festival and return a single direct URL to the image.',
+    model: 'claude-sonnet-4-6'
   }
 };
 
@@ -36,6 +40,15 @@ function PromptConfig({ workspace = 'image-eval' }) {
       claude_model: DEFAULTS['web-search-eval'].model
     },
     'web-search-eval:prompt-config'
+  );
+
+  // Poster Search Eval: Use localStorage only
+  const [posterSearchConfig, setPosterSearchConfig] = useStickyState(
+    {
+      system_prompt: DEFAULTS['poster-search-eval'].prompt,
+      claude_model: DEFAULTS['poster-search-eval'].model
+    },
+    'poster-search-eval:prompt-config'
   );
 
   // Image Eval: Use backend sync (existing pattern)
@@ -121,6 +134,8 @@ function PromptConfig({ workspace = 'image-eval' }) {
     const newPrompt = e.target.value;
     if (workspace === 'web-search-eval') {
       setWebSearchConfig({ ...webSearchConfig, system_prompt: newPrompt });
+    } else if (workspace === 'poster-search-eval') {
+      setPosterSearchConfig({ ...posterSearchConfig, system_prompt: newPrompt });
     } else {
       setSystemPrompt(newPrompt);
       scheduleSave(newPrompt, claudeModel);
@@ -131,9 +146,10 @@ function PromptConfig({ workspace = 'image-eval' }) {
     const newModel = e.target.value;
     if (workspace === 'web-search-eval') {
       setWebSearchConfig({ ...webSearchConfig, claude_model: newModel });
+    } else if (workspace === 'poster-search-eval') {
+      setPosterSearchConfig({ ...posterSearchConfig, claude_model: newModel });
     } else {
       setClaudeModel(newModel);
-      // Model changes save immediately (no debounce needed for dropdowns)
       saveToBackend(systemPrompt, newModel);
     }
   };
@@ -141,9 +157,13 @@ function PromptConfig({ workspace = 'image-eval' }) {
   // Get current values based on workspace
   const currentPrompt = workspace === 'web-search-eval'
     ? webSearchConfig.system_prompt
+    : workspace === 'poster-search-eval'
+    ? posterSearchConfig.system_prompt
     : systemPrompt;
   const currentModel = workspace === 'web-search-eval'
     ? webSearchConfig.claude_model
+    : workspace === 'poster-search-eval'
+    ? posterSearchConfig.claude_model
     : claudeModel;
 
   if (loading) {

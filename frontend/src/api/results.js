@@ -1,11 +1,15 @@
 import { apiGet } from './client'
 
+function getPrefix(workspace) {
+  if (workspace === 'web-search') return '/web-search/executions'
+  if (workspace === 'poster-search') return '/poster-search/executions'
+  return '/executions'
+}
+
 export async function getLastResult(testId, workspace = 'image-eval') {
-  const prefix = workspace === 'web-search' ? '/web-search/executions' : '/executions'
-  return apiGet(`${prefix}/results/${testId}`)
+  return apiGet(`${getPrefix(workspace)}/results/${testId}`)
 }
 
 export async function getAllResults(workspace = 'image-eval') {
-  const prefix = workspace === 'web-search' ? '/web-search/executions' : '/executions'
-  return apiGet(`${prefix}/results`)
+  return apiGet(`${getPrefix(workspace)}/results`)
 }

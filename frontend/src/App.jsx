@@ -13,6 +13,8 @@ import WebSearchTestList from './pages/web-search/TestCaseList'
 import WebSearchTestCreate from './pages/web-search/TestCaseCreate'
 import WebSearchTestEdit from './pages/web-search/TestCaseEdit'
 import WebSearchResultsPage from './pages/web-search/ResultsPage'
+import PosterSearchTestList from './pages/poster-search/TestCaseList'
+import PosterSearchResultsPage from './pages/poster-search/ResultsPage'
 import './App.css'
 
 // Redirect component for legacy detail view URLs
@@ -33,8 +35,12 @@ function AppContent() {
 
   // Sync workspace state based on URL when navigating directly
   useEffect(() => {
-    const isWebSearchRoute = location.pathname.startsWith('/web-search')
-    const expectedWorkspace = isWebSearchRoute ? 'web-search-eval' : 'image-eval'
+    let expectedWorkspace = 'image-eval'
+    if (location.pathname.startsWith('/poster-search')) {
+      expectedWorkspace = 'poster-search-eval'
+    } else if (location.pathname.startsWith('/web-search')) {
+      expectedWorkspace = 'web-search-eval'
+    }
     if (activeWorkspace !== expectedWorkspace) {
       setActiveWorkspace(expectedWorkspace)
     }
@@ -47,6 +53,9 @@ function AppContent() {
   // Web Search Eval batch results state
   const [webSearchResults, setWebSearchResults] = useState(null)
 
+  // Poster Search Eval batch results state
+  const [posterSearchResults, setPosterSearchResults] = useState(null)
+
   // Memoize callback to prevent infinite re-render loop
   const handleBatchComplete = useCallback((results, config) => {
     setBatchResults(results)
@@ -57,12 +66,17 @@ function AppContent() {
     setWebSearchResults(results)
   }, [])
 
+  const handlePosterSearchBatchComplete = useCallback((results) => {
+    setPosterSearchResults(results)
+  }, [])
+
   // Handle workspace change - update state and navigate to list
   const handleWorkspaceChange = useCallback((workspace) => {
     setActiveWorkspace(workspace)
-    // Navigate to the appropriate list view
     if (workspace === 'image-eval') {
       navigate('/')
+    } else if (workspace === 'poster-search-eval') {
+      navigate('/poster-search')
     } else {
       navigate('/web-search')
     }
@@ -130,6 +144,28 @@ function AppContent() {
             <Route path="/web-search/test-cases/new" element={<WebSearchTestCreate />} />
             <Route path="/web-search/test-cases/:id/results" element={<TestCaseResultDetail />} />
             <Route path="/web-search/test-cases/:id/edit" element={<WebSearchTestEdit />} />
+            {/* Poster Search Eval routes */}
+            <Route
+              path="/poster-search"
+              element={
+                <div className="workspace-panel" role="tabpanel">
+                  <ViewTabs basePath="/poster-search" />
+                  <PosterSearchTestList onBatchComplete={handlePosterSearchBatchComplete} />
+                </div>
+              }
+            />
+            <Route
+              path="/poster-search/results"
+              element={
+                <div className="workspace-panel" role="tabpanel">
+                  <ViewTabs basePath="/poster-search" />
+                  <PosterSearchResultsPage batchResults={posterSearchResults} />
+                </div>
+              }
+            />
+            <Route path="/poster-search/test-cases/new" element={<WebSearchTestCreate />} />
+            <Route path="/poster-search/test-cases/:id/results" element={<TestCaseResultDetail />} />
+            <Route path="/poster-search/test-cases/:id/edit" element={<WebSearchTestEdit />} />
           </Routes>
         </main>
       </div>

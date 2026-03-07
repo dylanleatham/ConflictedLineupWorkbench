@@ -32,6 +32,17 @@ function WorkspaceTabs({ active, onChange }) {
       >
         Web Search Eval
       </button>
+      <button
+        type="button"
+        role="tab"
+        id="tab-poster-search"
+        aria-selected={active === 'poster-search-eval'}
+        aria-controls="panel-poster-search"
+        className={`workspace-tab ${active === 'poster-search-eval' ? 'active' : ''}`}
+        onClick={() => onChange('poster-search-eval')}
+      >
+        Poster Search
+      </button>
     </div>
   )
 }

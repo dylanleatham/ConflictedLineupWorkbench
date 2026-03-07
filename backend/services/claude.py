@@ -156,6 +156,115 @@ async def extract_lineup_from_text(
     return parse_claude_json_response(response_text)
 
 
+def parse_claude_url_response(response_text: str) -> str:
+    """
+    Extract an image URL from Claude's response.
+
+    Handles:
+    - Markdown image patterns: ![alt](url)
+    - Plain URLs ending in image extensions
+    - URLs on their own line
+
+    Args:
+        response_text: Raw text response from Claude
+
+    Returns:
+        Image URL string
+
+    Raises:
+        ValueError: If no image URL found
+    """
+    text = response_text.strip()
+
+    def _clean_url(url: str) -> str:
+        """Strip trailing markdown/punctuation artifacts from a URL."""
+        return url.rstrip("*_`.,;:!?")
+
+    # Try markdown image pattern first: ![...](url)
+    md_pattern = r'!\[[^\]]*\]\((https?://[^\s\)]+)\)'
+    match = re.search(md_pattern, text)
+    if match:
+        return _clean_url(match.group(1))
+
+    # Try finding URLs with image extensions
+    img_url_pattern = r'(https?://[^\s\"\'\)\]>*]+\.(?:jpg|jpeg|png|gif|webp|bmp|tiff)(?:\?[^\s\"\'\)\]>*]*)?)'
+    match = re.search(img_url_pattern, text, re.IGNORECASE)
+    if match:
+        return _clean_url(match.group(1))
+
+    # Fallback: any URL
+    url_pattern = r'(https?://[^\s\"\'\)\]>*]+)'
+    match = re.search(url_pattern, text)
+    if match:
+        return _clean_url(match.group(1))
+
+    raise ValueError(f"Could not extract image URL from response: {text[:200]}...")
+
+
+async def extract_poster_url(
+    festival_name: str,
+    system_prompt: str,
+    model: str,
+    timeout: float = 120.0
+) -> str:
+    """
+    Extract a poster image URL for a festival using Claude with web search.
+
+    Args:
+        festival_name: Name and year of the festival (e.g., "Coachella 2024")
+        system_prompt: System prompt instructing Claude on what to return
+        model: Claude model ID
+        timeout: Maximum seconds to wait for API response
+
+    Returns:
+        URL string pointing to a festival poster image
+
+    Raises:
+        asyncio.TimeoutError: If API call exceeds timeout
+        ValueError: If response cannot be parsed
+    """
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not api_key:
+        raise ValueError("ANTHROPIC_API_KEY environment variable not set")
+
+    client = AsyncAnthropic(api_key=api_key)
+
+    try:
+        response = await asyncio.wait_for(
+            _call_with_retry(
+                client,
+                model=model,
+                max_tokens=4096,
+                system=system_prompt,
+                tools=[
+                    {
+                        "type": "web_search_20250305",
+                        "name": "web_search"
+                    }
+                ],
+                messages=[
+                    {
+                        "role": "user",
+                        "content": f"Festival: {festival_name}"
+                    }
+                ]
+            ),
+            timeout=timeout
+        )
+    except asyncio.TimeoutError:
+        raise asyncio.TimeoutError(
+            f"Claude API call timed out after {timeout} seconds for festival: {festival_name}"
+        )
+
+    # Extract text content from response
+    response_text = ""
+    for block in response.content:
+        if block.type == "text":
+            response_text += block.text
+
+    return parse_claude_url_response(response_text)
+
+
 async def extract_lineup_from_image(
     image_path: Path,
     system_prompt: str,
