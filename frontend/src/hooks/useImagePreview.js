@@ -13,17 +13,17 @@ export function useImagePreview(file) {
   const [previewUrl, setPreviewUrl] = useState(null)
 
   useEffect(() => {
-    if (!file) {
-      setPreviewUrl(null)
-      return
-    }
+    if (!file) return
 
+    // Blob URLs are an external resource that must be created and revoked in
+    // pairs, so an effect (not useMemo) owns their lifecycle.
     const url = URL.createObjectURL(file)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPreviewUrl(url)
 
     // Cleanup: revoke blob URL when file changes or component unmounts
     return () => URL.revokeObjectURL(url)
   }, [file])
 
-  return previewUrl
+  return file ? previewUrl : null
 }

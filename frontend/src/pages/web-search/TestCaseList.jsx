@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getTestCases, deleteTestCase } from '../../api/testCases'
 import { getAllResults } from '../../api/results'
-import { useWebSearchExecution } from '../../hooks/useWebSearchExecution'
-import { useWebSearchBatch } from '../../hooks/useWebSearchBatch'
+import { useWebSearchExecution } from '../../hooks/useExecution'
+import { useWebSearchBatch } from '../../hooks/useBatchExecution'
 import { useStickyState } from '../../hooks/useStickyState'
 import TestCaseList from '../../components/TestCaseList'
 import WebSearchBatchProgress from '../../components/WebSearchBatchProgress'
@@ -12,7 +12,7 @@ import ExecutionResult from '../../components/ExecutionResult'
 // Default config matching PromptConfig.jsx defaults for web-search-eval
 const DEFAULT_CONFIG = {
   system_prompt: 'Search for the festival lineup and return the artist names as a JSON array.',
-  claude_model: 'claude-sonnet-4-20250514'
+  claude_model: 'claude-sonnet-4-6'
 }
 
 function WebSearchTestCases({ onBatchComplete }) {

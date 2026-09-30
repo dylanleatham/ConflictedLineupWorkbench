@@ -1,23 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { getPromptConfig, savePromptConfig } from '../api/prompts';
 import { useStickyState } from '../hooks/useStickyState';
+import { WORKSPACE_DEFAULTS as DEFAULTS } from '../constants';
 import './PromptConfig.css';
-
-// Workspace-specific defaults
-const DEFAULTS = {
-  'image-eval': {
-    prompt: 'Extract the festival lineup from this image. Return a JSON array of artist names.',
-    model: 'claude-sonnet-4-6'
-  },
-  'web-search-eval': {
-    prompt: 'Search for the festival lineup and return the artist names as a JSON array.',
-    model: 'claude-sonnet-4-6'
-  },
-  'poster-search-eval': {
-    prompt: 'Search for the lineup poster image for this festival and return a single direct URL to the image.',
-    model: 'claude-sonnet-4-6'
-  }
-};
 
 // Storage key for cross-component sync (image-eval only)
 const STORAGE_EVENT_KEY = 'festival-evaluator:prompt-config';

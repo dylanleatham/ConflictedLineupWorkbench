@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { uploadImage } from '../api/images'
 import { createTestCase } from '../api/testCases'
 import { ImagePreview } from '../components/ImagePreview'
-import { GroundTruthLineupField, parseLineup } from '../components/GroundTruthLineupField'
+import { GroundTruthLineupField } from '../components/GroundTruthLineupField'
+import { parseLineup } from '../utils/lineup'
 
 function TestCaseCreate() {
   const navigate = useNavigate()
@@ -80,7 +81,7 @@ function TestCaseCreate() {
 
       // Create test case
       const trimmedYear = year.trim() || null
-      const testCase = await createTestCase(name.trim(), artists, imageHash, trimmedYear)
+      await createTestCase(name.trim(), artists, imageHash, trimmedYear)
 
       // Navigate to list
       navigate('/')

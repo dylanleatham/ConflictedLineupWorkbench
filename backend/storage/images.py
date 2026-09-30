@@ -7,7 +7,7 @@ from typing import Optional
 
 from PIL import Image
 
-from .config import IMAGES_DIR, ensure_dirs
+from .config import IMAGES_DIR, ensure_dirs, is_safe_id
 
 # Image optimization constants
 MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10MB
@@ -96,6 +96,8 @@ def get_image_path(image_hash: str) -> Optional[Path]:
     Returns:
         Path to image file if exists, None otherwise
     """
+    if not is_safe_id(image_hash):
+        return None
     image_path = IMAGES_DIR / f"{image_hash}.jpg"
     return image_path if image_path.exists() else None
 
@@ -110,5 +112,4 @@ def image_exists(image_hash: str) -> bool:
     Returns:
         True if image exists, False otherwise
     """
-    image_path = IMAGES_DIR / f"{image_hash}.jpg"
-    return image_path.exists()
+    return get_image_path(image_hash) is not None

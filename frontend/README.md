@@ -1,16 +1,14 @@
-# React + Vite
+# Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React 19 + Vite UI for the Conflicted Lineup Workbench. See the [root README](../README.md) for setup and an overview.
 
-Currently, two official plugins are available:
+```bash
+npm install
+npm run dev     # http://localhost:5173, proxies /api to the backend on :8000
+npm run lint
+npm run build
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- `src/pages/`: route-level views. Image Eval lives at the top level; `web-search/` and `poster-search/` hold the other two workspaces.
+- `src/hooks/`: `useExecution.js` and `useBatchExecution.js` wrap one generic single-run hook and one generic batch-polling hook for all three workspaces. There is also `useStickyState` for localStorage-backed state that stays in sync across tabs.
+- `src/api/`: thin fetch wrappers. `executions.js` builds one client per workspace from a shared factory.

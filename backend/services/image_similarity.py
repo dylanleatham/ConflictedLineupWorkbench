@@ -40,8 +40,8 @@ async def download_image(url: str, timeout: float = 30.0) -> bytes:
             Image.open(io.BytesIO(response.content)).verify()
         except Exception:
             raise ValueError(
-                f"Downloaded content is not a valid image. "
-                f"The URL may point to an HTML page or other non-image content."
+                "Downloaded content is not a valid image. "
+                "The URL may point to an HTML page or other non-image content."
             )
         return response.content
 

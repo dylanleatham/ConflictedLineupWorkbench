@@ -19,7 +19,7 @@ function PosterSearchResultsPage({ batchResults }) {
     )
   }
 
-  const { results, average_similarity, high_similarity_count, total, completed, failed } = batchResults
+  const { results, average_similarity, high_similarity_count, completed, failed } = batchResults
 
   // Build test name lookup
   const testMap = {}
@@ -78,7 +78,13 @@ function PosterSearchResultsPage({ batchResults }) {
             {result.status === 'failed' && (
               <div>
                 <div style={styles.errorBox}>{result.error}</div>
-                {result.poster_url && (
+                {result.claude_response && (
+                  <div style={{ marginTop: '8px' }}>
+                    <h4 style={styles.columnTitle}>Claude Response</h4>
+                    <pre style={styles.jsonBlock}>{JSON.stringify(result.claude_response, null, 2)}</pre>
+                  </div>
+                )}
+                {!result.claude_response && result.poster_url && (
                   <div style={{ marginTop: '8px' }}>
                     <span style={{ fontSize: '13px', color: '#555' }}>URL returned: </span>
                     <a href={result.poster_url} target="_blank" rel="noopener noreferrer" style={styles.urlLink}>
@@ -90,36 +96,44 @@ function PosterSearchResultsPage({ batchResults }) {
             )}
 
             {result.status === 'success' && (
-              <div style={styles.resultBody}>
-                <div style={styles.imageColumn}>
-                  <h4 style={styles.columnTitle}>Returned Poster</h4>
-                  {result.poster_url && (
-                    <>
-                      <a href={result.poster_url} target="_blank" rel="noopener noreferrer" style={styles.urlLink}>
-                        {result.poster_url.length > 60 ? result.poster_url.slice(0, 60) + '...' : result.poster_url}
-                      </a>
-                      <div style={styles.iframeContainer}>
-                        <iframe
-                          src={result.poster_url}
-                          title={`Poster for ${festivalName}`}
-                          style={styles.iframe}
-                          sandbox="allow-same-origin"
-                        />
-                      </div>
-                    </>
-                  )}
+              <>
+                {result.claude_response && (
+                  <div style={{ marginBottom: '12px' }}>
+                    <h4 style={styles.columnTitle}>Claude Response</h4>
+                    <pre style={styles.jsonBlock}>{JSON.stringify(result.claude_response, null, 2)}</pre>
+                  </div>
+                )}
+                <div style={styles.resultBody}>
+                  <div style={styles.imageColumn}>
+                    <h4 style={styles.columnTitle}>Returned Poster</h4>
+                    {result.poster_url && (
+                      <>
+                        <a href={result.poster_url} target="_blank" rel="noopener noreferrer" style={styles.urlLink}>
+                          {result.poster_url.length > 60 ? result.poster_url.slice(0, 60) + '...' : result.poster_url}
+                        </a>
+                        <div style={styles.iframeContainer}>
+                          <iframe
+                            src={result.poster_url}
+                            title={`Poster for ${festivalName}`}
+                            style={styles.iframe}
+                            sandbox="allow-same-origin"
+                          />
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <div style={styles.imageColumn}>
+                    <h4 style={styles.columnTitle}>Ground Truth</h4>
+                    {test?.image_hash && (
+                      <img
+                        src={`/api/images/${test.image_hash}`}
+                        alt={`Ground truth for ${festivalName}`}
+                        style={styles.groundTruthImg}
+                      />
+                    )}
+                  </div>
                 </div>
-                <div style={styles.imageColumn}>
-                  <h4 style={styles.columnTitle}>Ground Truth</h4>
-                  {test?.image_hash && (
-                    <img
-                      src={`/api/images/${test.image_hash}`}
-                      alt={`Ground truth for ${festivalName}`}
-                      style={styles.groundTruthImg}
-                    />
-                  )}
-                </div>
-              </div>
+              </>
             )}
           </div>
         )
@@ -229,6 +243,19 @@ const styles = {
     color: '#555',
     marginBottom: '8px',
     marginTop: 0,
+  },
+  jsonBlock: {
+    backgroundColor: '#f5f5f5',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    padding: '10px',
+    fontSize: '12px',
+    fontFamily: 'monospace',
+    whiteSpace: 'pre-wrap',
+    wordBreak: 'break-all',
+    margin: 0,
+    maxHeight: '200px',
+    overflow: 'auto',
   },
   urlLink: {
     color: '#007bff',

@@ -1,40 +1,25 @@
 import { apiPost, apiGet } from './client'
 
 /**
- * Execute a single test.
- * @param {string} testId - Test case ID
- * @param {object} config - { system_prompt, model }
- * @returns {Promise<object>} - Execution result with accuracy breakdown
+ * Client for one workspace's execution endpoints. All three workspaces share
+ * the same route shape under different prefixes.
+ *
+ * @param {string} prefix - e.g. '/executions' or '/web-search/executions'
  */
-export async function executeTest(testId, config) {
-  return apiPost(`/executions/${testId}`, config)
+function createExecutionApi(prefix) {
+  return {
+    /** Run one test. Returns the result; failures come back with status "failed". */
+    execute: (testId, body) => apiPost(`${prefix}/${testId}`, body),
+    /** Start a background batch. Returns { batch_id }. */
+    startBatch: (body) => apiPost(`${prefix}/batch`, body),
+    /** Returns { total, completed, failed, cancelled, current_test_id }. */
+    getBatchProgress: (batchId) => apiGet(`${prefix}/batch/${batchId}/progress`),
+    cancelBatch: (batchId) => apiPost(`${prefix}/batch/${batchId}/cancel`),
+    /** Returns summary stats plus every individual result. */
+    getBatchResults: (batchId) => apiGet(`${prefix}/batch/${batchId}/results`),
+  }
 }
 
-/**
- * Start batch execution.
- * @param {object} request - { test_ids, system_prompt, model }
- */
-export async function startBatch(request) {
-  return apiPost('/executions/batch', request)
-}
-
-/**
- * Get batch progress.
- */
-export async function getBatchProgress(batchId) {
-  return apiGet(`/executions/batch/${batchId}/progress`)
-}
-
-/**
- * Cancel batch execution.
- */
-export async function cancelBatch(batchId) {
-  return apiPost(`/executions/batch/${batchId}/cancel`)
-}
-
-/**
- * Get batch results.
- */
-export async function getBatchResults(batchId) {
-  return apiGet(`/executions/batch/${batchId}/results`)
-}
+export const imageEvalApi = createExecutionApi('/executions')
+export const webSearchApi = createExecutionApi('/web-search/executions')
+export const posterSearchApi = createExecutionApi('/poster-search/executions')

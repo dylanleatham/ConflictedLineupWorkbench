@@ -2,15 +2,15 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getTestCases, deleteTestCase } from '../../api/testCases'
 import { getAllResults } from '../../api/results'
-import { usePosterSearchExecution } from '../../hooks/usePosterSearchExecution'
-import { usePosterSearchBatch } from '../../hooks/usePosterSearchBatch'
+import { usePosterSearchExecution } from '../../hooks/useExecution'
+import { usePosterSearchBatch } from '../../hooks/useBatchExecution'
 import { useStickyState } from '../../hooks/useStickyState'
 import TestCaseList from '../../components/TestCaseList'
 import WebSearchBatchProgress from '../../components/WebSearchBatchProgress'
 import PosterSearchResult from './PosterSearchResult'
 
 const DEFAULT_CONFIG = {
-  system_prompt: 'Search for the lineup poster image for this festival and return a single direct URL to the image.',
+  system_prompt: 'Search for the lineup poster image for this festival and return a JSON object with the following fields: "poster_url" (direct URL to the poster image), "source_url" (URL of the page where the poster was found), and "lineup_text" (the lineup text extracted from the poster or page, if available). Return only the JSON object, no other text.',
   claude_model: 'claude-sonnet-4-6'
 }
 

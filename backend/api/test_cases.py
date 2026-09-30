@@ -1,7 +1,7 @@
 """REST API endpoints for test case management."""
 
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 
 from fastapi import APIRouter, HTTPException, status
@@ -51,7 +51,7 @@ def generate_id(name: str) -> str:
     slug = re.sub(r'[-\s]+', '-', slug).strip('-')
 
     # Add timestamp for uniqueness
-    timestamp = int(datetime.utcnow().timestamp())
+    timestamp = int(datetime.now(timezone.utc).timestamp())
 
     return f"{slug}-{timestamp}"
 

@@ -6,13 +6,15 @@ from pathlib import Path
 from typing import Optional
 import logging
 
-from .config import RESULTS_DIR, ensure_dirs
+from .config import RESULTS_DIR, ensure_dirs, is_safe_id
 
 logger = logging.getLogger(__name__)
 
 
 def _workspace_dir(workspace: str) -> Path:
     """Get the results subdirectory for a workspace."""
+    if not is_safe_id(workspace):
+        raise ValueError(f"Invalid workspace: {workspace!r}")
     d = RESULTS_DIR / workspace
     d.mkdir(parents=True, exist_ok=True)
     return d
@@ -20,6 +22,8 @@ def _workspace_dir(workspace: str) -> Path:
 
 def save_result(test_id: str, result: dict, workspace: str = "image-eval") -> None:
     """Save the last execution result for a test case."""
+    if not is_safe_id(test_id):
+        raise ValueError(f"Invalid test id: {test_id!r}")
     ensure_dirs()
     ws_dir = _workspace_dir(workspace)
     file_path = ws_dir / f"{test_id}.json"
@@ -39,6 +43,8 @@ def save_result(test_id: str, result: dict, workspace: str = "image-eval") -> No
 
 def load_result(test_id: str, workspace: str = "image-eval") -> Optional[dict]:
     """Load the last execution result for a test case."""
+    if not is_safe_id(test_id):
+        return None
     file_path = _workspace_dir(workspace) / f"{test_id}.json"
 
     if not file_path.exists():
@@ -63,7 +69,7 @@ def load_all_results(workspace: str = "image-eval") -> dict:
         try:
             with json_file.open('r', encoding='utf-8') as f:
                 results[test_id] = json.load(f)
-        except (json.JSONDecodeError, Exception) as e:
+        except (json.JSONDecodeError, OSError) as e:
             logger.warning(f"Skipping corrupted result {json_file}: {e}")
             continue
 
@@ -72,6 +78,8 @@ def load_all_results(workspace: str = "image-eval") -> dict:
 
 def delete_result(test_id: str, workspace: str = "image-eval") -> bool:
     """Delete the saved result for a test case."""
+    if not is_safe_id(test_id):
+        return False
     file_path = _workspace_dir(workspace) / f"{test_id}.json"
 
     if not file_path.exists():

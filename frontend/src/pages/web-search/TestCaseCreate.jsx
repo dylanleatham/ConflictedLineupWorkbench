@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { createTestCase } from '../../api/testCases'
-import { GroundTruthLineupField, parseLineup } from '../../components/GroundTruthLineupField'
+import { GroundTruthLineupField } from '../../components/GroundTruthLineupField'
+import { parseLineup } from '../../utils/lineup'
 
 function TestCaseCreate() {
   const navigate = useNavigate()

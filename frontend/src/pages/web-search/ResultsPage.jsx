@@ -7,7 +7,7 @@ import { useStickyState } from '../../hooks/useStickyState'
 // Default config matching PromptConfig.jsx defaults for web-search-eval
 const DEFAULT_CONFIG = {
   system_prompt: 'Search for the festival lineup and return the artist names as a JSON array.',
-  claude_model: 'claude-sonnet-4-20250514'
+  claude_model: 'claude-sonnet-4-6'
 }
 
 function WebSearchResultsPage({ batchResults }) {

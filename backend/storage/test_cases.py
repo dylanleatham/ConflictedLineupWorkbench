@@ -7,7 +7,7 @@ from typing import List, Optional
 import logging
 
 from .models import TestCase
-from .config import DATA_DIR, ensure_dirs
+from .config import DATA_DIR, ensure_dirs, is_safe_id
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +19,8 @@ def save_test_case(test_case: TestCase) -> None:
     Args:
         test_case: TestCase model to save
     """
+    if not is_safe_id(test_case.id):
+        raise ValueError(f"Invalid test case id: {test_case.id!r}")
     ensure_dirs()
     file_path = DATA_DIR / f"{test_case.id}.json"
 
@@ -49,6 +51,8 @@ def load_test_case(test_case_id: str) -> Optional[TestCase]:
     Returns:
         TestCase object if found, None if file doesn't exist
     """
+    if not is_safe_id(test_case_id):
+        return None
     file_path = DATA_DIR / f"{test_case_id}.json"
 
     if not file_path.exists():
@@ -100,6 +104,8 @@ def delete_test_case(test_case_id: str) -> bool:
     Returns:
         True if file was deleted, False if file didn't exist
     """
+    if not is_safe_id(test_case_id):
+        return False
     file_path = DATA_DIR / f"{test_case_id}.json"
 
     if not file_path.exists():

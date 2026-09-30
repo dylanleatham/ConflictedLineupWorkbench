@@ -1,17 +1,25 @@
 """FastAPI application for Festival Lineup Evaluator."""
 
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
-
-# Load .env from project root
-load_dotenv(Path(__file__).parent.parent / ".env")
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.api import test_cases, images, executions, prompts, web_search_executions, poster_search_executions
-from backend.storage import ensure_dirs
+# Load .env from project root before anything reads the environment
+load_dotenv(Path(__file__).parent.parent / ".env")
+
+from backend.api import (  # noqa: E402
+    executions,
+    images,
+    poster_search_executions,
+    prompts,
+    test_cases,
+    web_search_executions,
+)
+from backend.storage import ensure_dirs  # noqa: E402
 
 
 @asynccontextmanager
@@ -31,11 +39,15 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Configure CORS for local development
+# The Vite dev server proxies /api, so CORS only matters when calling the API
+# directly from another origin. Override with a comma-separated CORS_ORIGINS.
+CORS_ORIGINS = os.environ.get(
+    "CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173"
+).split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins in development
-    allow_credentials=True,
+    allow_origins=CORS_ORIGINS,
     allow_methods=["*"],
     allow_headers=["*"],
 )

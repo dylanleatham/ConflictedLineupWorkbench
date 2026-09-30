@@ -40,13 +40,13 @@ export function useStickyState(defaultValue, key) {
 
   // Track current value in ref for event listener comparison
   const valueRef = useRef(value);
-  valueRef.current = value;
 
   // Track if we're the source of the change to avoid self-triggering
   const isLocalUpdate = useRef(false);
 
   // Persist to localStorage when value changes
   useEffect(() => {
+    valueRef.current = value;
     isLocalUpdate.current = true;
     localStorage.setItem(key, JSON.stringify(value));
     // Notify other components

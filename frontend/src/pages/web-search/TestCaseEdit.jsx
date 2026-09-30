@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { getTestCase, updateTestCase } from '../../api/testCases'
-import { GroundTruthLineupField, parseLineup } from '../../components/GroundTruthLineupField'
+import { GroundTruthLineupField } from '../../components/GroundTruthLineupField'
+import { parseLineup } from '../../utils/lineup'
 
 function TestCaseEdit() {
   const { id } = useParams()

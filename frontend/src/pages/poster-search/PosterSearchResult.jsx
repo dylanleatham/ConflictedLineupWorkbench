@@ -8,7 +8,13 @@ function PosterSearchResult({ result }) {
         <div style={styles.errorBox}>
           <strong>Error:</strong> {result.error}
         </div>
-        {result.poster_url && (
+        {result.claude_response && (
+          <div style={{ marginTop: '16px' }}>
+            <h4 style={styles.sectionTitle}>Claude Response</h4>
+            <pre style={styles.jsonBlock}>{JSON.stringify(result.claude_response, null, 2)}</pre>
+          </div>
+        )}
+        {!result.claude_response && result.poster_url && (
           <div style={{ marginTop: '16px' }}>
             <h4 style={styles.sectionTitle}>Returned URL</h4>
             <a href={result.poster_url} target="_blank" rel="noopener noreferrer" style={styles.urlLink}>
@@ -20,7 +26,7 @@ function PosterSearchResult({ result }) {
     )
   }
 
-  const { poster_url, similarity, metadata } = result
+  const { poster_url, claude_response, similarity, metadata } = result
   const simPct = similarity?.similarity_percentage ?? 0
   const simColor = simPct >= 80 ? '#28a745' : simPct >= 50 ? '#ffc107' : '#dc3545'
 
@@ -37,9 +43,16 @@ function PosterSearchResult({ result }) {
         </div>
       )}
 
+      {claude_response && (
+        <div style={styles.section}>
+          <h4 style={styles.sectionTitle}>Claude Response</h4>
+          <pre style={styles.jsonBlock}>{JSON.stringify(claude_response, null, 2)}</pre>
+        </div>
+      )}
+
       {poster_url && (
         <div style={styles.section}>
-          <h4 style={styles.sectionTitle}>Returned URL</h4>
+          <h4 style={styles.sectionTitle}>Poster Preview</h4>
           <a href={poster_url} target="_blank" rel="noopener noreferrer" style={styles.urlLink}>
             {poster_url}
           </a>
@@ -113,6 +126,19 @@ const styles = {
     fontSize: '16px',
     marginBottom: '8px',
     color: '#555',
+  },
+  jsonBlock: {
+    backgroundColor: '#f5f5f5',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    padding: '12px',
+    fontSize: '13px',
+    fontFamily: 'monospace',
+    whiteSpace: 'pre-wrap',
+    wordBreak: 'break-all',
+    margin: 0,
+    maxHeight: '300px',
+    overflow: 'auto',
   },
   urlLink: {
     color: '#007bff',
