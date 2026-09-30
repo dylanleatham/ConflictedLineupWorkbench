@@ -24,15 +24,16 @@ def web_test(test_id="fest-1", lineup=("A", "B")):
 
 
 def test_every_workspace_exposes_the_same_routes():
-    paths = {(m, r.path) for r in app.routes for m in getattr(r, "methods", ())}
+    # The OpenAPI schema is the public contract, independent of router internals
+    paths = app.openapi()["paths"]
     for prefix in ("/api/executions", WEB, POSTER):
         for method, suffix in [
-            ("POST", "/batch"), ("POST", "/{test_id}"),
-            ("GET", "/batch/{batch_id}/progress"), ("POST", "/batch/{batch_id}/cancel"),
-            ("GET", "/batch/{batch_id}/results"),
-            ("GET", "/results/{test_id}"), ("GET", "/results"),
+            ("post", "/batch"), ("post", "/{test_id}"),
+            ("get", "/batch/{batch_id}/progress"), ("post", "/batch/{batch_id}/cancel"),
+            ("get", "/batch/{batch_id}/results"),
+            ("get", "/results/{test_id}"), ("get", "/results"),
         ]:
-            assert (method, prefix + suffix) in paths, (method, prefix + suffix)
+            assert method in paths.get(prefix + suffix, {}), (method, prefix + suffix)
 
 
 def test_single_run_success_is_saved_with_metadata(client, monkeypatch):
